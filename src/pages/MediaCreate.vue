@@ -43,37 +43,104 @@
         </div>
 
         <!-- Category -->
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
-          <select
-            v-model="form.category_id"
-            required
-            class="block w-full px-4 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500"
-          >
-            <option value="" disabled selected>Select category</option>
-            <option v-for="cat in categories" :key="cat.id" :value="cat.id">
-              {{ cat.name }}
-            </option>
-          </select>
+          <div>
+            <label for="category" class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+            <select
+                id="category"
+                v-model="form.category_id"
+                class="block w-full px-4 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150"
+            >
+                <option disabled value="">Select category (optional)</option>
+                <option v-for="cat in categories" :key="cat.id" :value="cat.id">
+                {{ cat.name }}
+                </option>
+            </select>
         </div>
 
-        <!-- Media File Upload -->
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Media File</label>
-          <input type="file" accept="image/*,video/*,audio/*" @change="onFileChange" required />
-          <p v-if="filePreview" class="mt-2 text-sm text-gray-500">
-            Selected file: {{ selectedFile?.name }}
-          </p>
+        <!-- Media + Thumbnail row -->
+    
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+        
+          <!-- Media File Selector (Clickable) -->
+          <div v-on:click="triggerMediaInput" class="cursor-pointer">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Media File</label>
+              <div
+                  class="flex flex-col items-center justify-center border-2 border-dashed rounded-xl p-4 min-h-[160px] bg-gray-50 hover:bg-indigo-50 hover:border-indigo-400 transition duration-300 ease-in-out group"
+              >
+                  <input
+                      type="file"
+                      :accept="getMediaAcceptType()"
+                      v-on:change="onMediaChange"
+                      class="hidden"
+                      ref="mediaInput"
+                  />
+                  
+                  <!-- Media Preview -->
+                  <div v-if="mediaPreview" class="w-full h-full rounded-lg overflow-hidden flex items-center justify-center bg-black">
+                      <video
+                          v-if="form.media_type === 'video'"
+                          :src="mediaPreview"
+                          controls
+                          class="max-h-64 w-full object-contain"
+                      ></video>
+                      <audio
+                          v-else-if="form.media_type === 'audio'"
+                          :src="mediaPreview"
+                          controls
+                          class="w-full max-w-sm p-4"
+                      ></audio>
+                      <img
+                          v-else-if="form.media_type === 'image'"
+                          :src="mediaPreview"
+                          class="max-h-64 w-full object-contain"
+                      />
+                      <p v-else class="text-sm text-white p-4">Preview unavailable. Click to change file.</p>
+                  </div>
+
+                  <!-- Placeholder -->
+                  <div v-else class="text-center p-4">
+                      <svg class="mx-auto h-12 w-12 text-indigo-400 group-hover:text-indigo-600 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                      </svg>
+                      <p class="mt-2 text-sm font-medium text-gray-600">Click to select {{ form.media_type || 'media' }} file</p>
+                      <p class="text-xs text-gray-400">Max size 50MB</p>
+                  </div>
+              </div>
+          </div>
+
+          <!-- Thumbnail Selector (Clickable) -->
+          <div v-on:click="triggerThumbnailInput" class="cursor-pointer">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Thumbnail (Image)</label>
+              <div
+                  class="flex flex-col items-center justify-center border-2 border-dashed rounded-xl p-4 h-40 w-40 mx-auto bg-gray-50 hover:bg-indigo-50 hover:border-indigo-400 transition duration-300 ease-in-out group"
+              >
+                  <input
+                      type="file"
+                      accept="image/*"
+                      v-on:change="onThumbnailChange"
+                      class="hidden"
+                      ref="thumbnailInput"
+                  />
+                  
+                  <!-- Thumbnail Preview -->
+                  <img
+                      v-if="thumbnailPreview"
+                      :src="thumbnailPreview"
+                      class="w-full h-full rounded-lg object-cover border-4 border-white shadow-lg"
+                  />
+                  
+                  <!-- Placeholder -->
+                  <div v-else class="text-center">
+                      <svg class="mx-auto h-12 w-12 text-indigo-400 group-hover:text-indigo-600 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      <p class="mt-2 text-sm font-medium text-gray-600">Select Thumbnail</p>
+                  </div>
+              </div>
+          </div>
         </div>
 
-        <!-- Optional Thumbnail -->
-        <div v-if="form.media_type === 'video' || form.media_type === 'image'">
-          <label class="block text-sm font-medium text-gray-700 mb-1">Thumbnail (optional)</label>
-          <input type="file" accept="image/*" @change="onThumbnailChange" />
-          <p v-if="thumbnailPreview" class="mt-2 text-sm text-gray-500">
-            Selected thumbnail: {{ selectedThumbnail?.name }}
-          </p>
-        </div>
+       
 
         <!-- Status -->
         <div>
@@ -116,7 +183,7 @@
 import { ref, onMounted } from "vue";
 import axios from "axios";
 
-const MEDIA_CREATE_URL = "http://localhost:8000/media";
+const MEDIA_CREATE_URL = "http://localhost:8000/media/create";
 
 const form = ref({
   title: "",
@@ -131,12 +198,45 @@ const selectedFile = ref(null);
 const selectedThumbnail = ref(null);
 const filePreview = ref(null);
 const thumbnailPreview = ref(null);
+const mediaPreview = ref(null);
+
+// Refs for the hidden file inputs
+const mediaInput = ref(null);
+const thumbnailInput = ref(null);
+
 
 const saving = ref(false);
 const message = ref({ text: "", type: "" });
 
 function getToken() {
   return localStorage.getItem("token");
+}
+
+// Function to determine the accepted file type for the media input based on the dropdown selection
+function getMediaAcceptType() {
+    switch (form.value.media_type) {
+        case 'image':
+            return 'image/*';
+        case 'video':
+            return 'video/*';
+        case 'audio':
+            return 'audio/*';
+        default:
+            return 'image/*,video/*,audio/*';
+    }
+}
+
+// Functions to manually trigger the hidden file inputs
+function triggerMediaInput() {
+    if (mediaInput.value) {
+        mediaInput.value.click();
+    }
+}
+
+function triggerThumbnailInput() {
+    if (thumbnailInput.value) {
+        thumbnailInput.value.click();
+    }
 }
 
 async function fetchCategories() {
@@ -151,14 +251,20 @@ async function fetchCategories() {
   }
 }
 
-function onFileChange(e) {
-  selectedFile.value = e.target.files[0];
-  filePreview.value = URL.createObjectURL(selectedFile.value);
+
+
+function onMediaChange(e) {
+  const f = e.target.files && e.target.files[0];
+  if (!f) return;
+  selectedFile.value = f;
+  mediaPreview.value = URL.createObjectURL(f);
 }
 
 function onThumbnailChange(e) {
-  selectedThumbnail.value = e.target.files[0];
-  thumbnailPreview.value = URL.createObjectURL(selectedThumbnail.value);
+  const f = e.target.files && e.target.files[0];
+  if (!f) return;
+  selectedThumbnail.value = f;
+  thumbnailPreview.value = URL.createObjectURL(f);
 }
 
 function resetForm() {

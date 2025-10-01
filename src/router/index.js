@@ -15,7 +15,7 @@ const routes = [
   { path: "/", name: "Home", component: Home },
   { path: "/dashboard", name: "Dashboard", component: Dashboard },
   { path: "/media", name: "MediaList", component: MediaList },
-  { path: "/media/:id", name: "MediaDetail", component: MediaDetail, props: true },
+  { path: "/media/detail/:id", name: "MediaDetail", component: MediaDetail, props: true },
   { path: "/categories", name: "Categories", component: Categories },
   { path: "/login", name: "Login", component: Login },
   { path: "/register", name: "Register", component: Register},

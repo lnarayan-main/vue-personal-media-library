@@ -45,13 +45,13 @@
         <!-- Media Preview -->
         <div class="h-48 bg-gray-200 flex items-center justify-center">
           <template v-if="media.media_type === 'image'">
-            <img :src="media.file_url" alt="" class="h-full w-full object-cover" />
+            <img :src="`${BASE_URL}${media.file_url}`" alt="" class="h-full w-full object-cover" />
           </template>
           <template v-else-if="media.media_type === 'video'">
-            <video :src="media.file_url" class="h-full w-full object-cover" muted></video>
+            <video :src="`${BASE_URL}${media.file_url}`" class="h-full w-full object-cover" muted></video>
           </template>
           <template v-else-if="media.media_type === 'audio'">
-            <audio :src="media.file_url" controls class="w-full"></audio>
+            <audio :src="`${BASE_URL}${media.file_url}`" controls class="w-full"></audio>
           </template>
         </div>
 
@@ -60,7 +60,7 @@
           <h2 class="font-semibold text-lg truncate">{{ media.title }}</h2>
           <p class="text-sm text-gray-600 truncate">{{ media.description }}</p>
           <router-link
-            :to="`/media/${media.id}`"
+            :to="`/media/detail/${media.id}`"
             class="mt-2 text-blue-600 hover:underline"
           >
             View Details
@@ -78,6 +78,8 @@ import { ref, onMounted, computed } from "vue";
 const mediaItems = ref([]);
 const categories = ref([]);
 const selectedCategory = ref(null);
+const BASE_URL = import.meta.env.VITE_API_URL;
+// const BASE_URL = "http://localhost:8000/";
 
 // Get token from localStorage
 const token = localStorage.getItem("token");

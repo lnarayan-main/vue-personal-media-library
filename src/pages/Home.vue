@@ -1,7 +1,6 @@
 <template>
   <div class="space-y-12">
     <!-- Hero Section -->
-     <h1 class="text-4xl font-bold text-blue-600">Hello Tailwind!</h1>
 
     <section class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white rounded-2xl shadow-lg p-10 text-center">
       <h1 class="text-4xl md:text-5xl font-bold mb-4">

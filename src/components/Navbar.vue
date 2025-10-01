@@ -22,12 +22,14 @@
         Media
       </router-link>
       <router-link
+        v-if="auth.isLoggedIn"
         to="/categories"
         class="text-gray-700 hover:text-indigo-600 font-medium"
       >
         Categories
       </router-link>
       <router-link
+        v-if="auth.isLoggedIn" 
         to="/dashboard"
         class="text-gray-700 hover:text-indigo-600 font-medium"
       >
@@ -39,7 +41,7 @@
     <div>
         <!-- If not logged in, show Login -->
       <router-link
-        v-if="!loggedIn"
+        v-if="!auth.isLoggedIn"
         to="/login"
         class="px-4 py-2 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-500 transition"
       >
@@ -49,7 +51,7 @@
       <!-- If logged in, show Logout -->
       <button
         v-else
-        @click="logout"
+        @click="auth.logout"
         class="px-4 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-500 transition"
       >
         Logout
@@ -59,7 +61,7 @@
   </nav>
 </template>
 
-<script setup>
+<!-- <script setup>
 import { ref, onMounted } from "vue";
 import { isLoggedIn, removeToken } from "../utils/auth";
 
@@ -74,4 +76,10 @@ function logout() {
   loggedIn.value = false;
   window.location.href = "/";
 }
+</script> -->
+
+<script setup>
+import { useAuthStore } from '@/stores/auth';
+
+const auth = useAuthStore();
 </script>

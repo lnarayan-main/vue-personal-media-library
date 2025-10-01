@@ -75,43 +75,63 @@
 </template>
 
 <script setup>
+import { setToken } from "@/utils/auth";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import { useAuthStore } from "@/stores/auth";
 
+
+const auth = useAuthStore();
 const router = useRouter();
+
+const username = ref("");
 const email = ref("");
 const password = ref("");
-const loading = ref(false);
 const error = ref("");
+const loading = ref(false);
+
+const handleLogin = async () => {
+  const success = await auth.login({
+    email: email.value,
+    password: password.value,
+  });
+
+  if (success) {
+    router.push("/dashboard");
+  } else {
+    error.value = "Invalid credentials";
+  }
+};
 
 // Handle login
-async function handleLogin() {
-  loading.value = true;
-  error.value = "";
+// async function handleLogin() {
+//   loading.value = true;
+//   error.value = "";
 
-  try {
-    const res = await fetch("http://localhost:8000/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: email.value, password: password.value }),
-    });
+//   try {
+//     const res = await fetch("http://localhost:8000/auth/login", {
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify({ email: email.value, password: password.value }),
+//     });
 
-    if (!res.ok) {
-      const errData = await res.json();
-      error.value = errData.detail || "Login failed";
-      return;
-    }
+//     if (!res.ok) {
+//       const errData = await res.json();
+//       error.value = errData.detail || "Login failed";
+//       return;
+//     }
 
-    const data = await res.json();
-    localStorage.setItem("token", data.access_token);
+//     const data = await res.json();
+//     localStorage.setItem("token", data.access_token);
+//     // setToken(data.access_token);
 
-    // Redirect to dashboard
-    router.push("/dashboard");
-  } catch (err) {
-    console.error(err);
-    error.value = "Something went wrong!";
-  } finally {
-    loading.value = false;
-  }
-}
+//     // Redirect to dashboard
+//     router.push("/dashboard");
+//   } catch (err) {
+//     console.error(err);
+//     error.value = "Something went wrong!";
+//   } finally {
+//     loading.value = false;
+//   }
+// }
 </script>

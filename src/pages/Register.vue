@@ -101,7 +101,7 @@ const registerUser = async () => {
     //   formData.append("profile_pic", form.value.profile_pic);
     // }
 
-    const response = await axios.post("http://localhost:8000/users/register", formData, {
+    const response = await axios.post("http://localhost:8000/user/register", formData, {
       headers: { "Content-Type": "application/json" },
     });
 

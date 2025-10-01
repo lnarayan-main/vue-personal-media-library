@@ -6,7 +6,7 @@
 
     <div class="flex">
       <!-- Sidebar -->
-      <Sidebar />
+      <Sidebar v-if="auth.isLoggedIn" />
 
       <!-- Main content -->
       <main class="flex-1 p-6">
@@ -19,4 +19,10 @@
 <script setup>
 import Navbar from "./components/Navbar.vue";
 import Sidebar from "./components/Sidebar.vue";
+import { useAuthStore } from "./stores/auth";
+
+const auth = useAuthStore();
+auth.fetchCurrentUser(); 
+
+
 </script>

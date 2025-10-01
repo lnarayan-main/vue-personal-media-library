@@ -8,6 +8,8 @@ import MediaDetail from "../pages/MediaDetail.vue";
 import Categories from "../pages/Categories.vue";
 import Login from "../pages/Login.vue";
 import Register from "../pages/Register.vue";
+import Profile from "../pages/Profile.vue";
+import MediaCreate from "../pages/MediaCreate.vue";
 
 const routes = [
   { path: "/", name: "Home", component: Home },
@@ -17,6 +19,8 @@ const routes = [
   { path: "/categories", name: "Categories", component: Categories },
   { path: "/login", name: "Login", component: Login },
   { path: "/register", name: "Register", component: Register},
+  { path: "/profile", name: "Profile", component: Profile},
+  { path: "/media/create", name: "MediaCreate", component: MediaCreate},
 ];
 
 const router = createRouter({

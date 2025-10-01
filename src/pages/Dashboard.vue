@@ -1,12 +1,4 @@
 <template>
-  <div class="min-h-screen flex flex-col">
-    <!-- Top Navbar -->
-    <Navbar />
-
-    <div class="flex flex-1">
-      <!-- Sidebar (visible on desktop only) -->
-      <Sidebar />
-
       <!-- Main Content -->
       <main class="flex-1 bg-gray-50 p-6">
         <h1 class="text-2xl font-bold text-gray-800 mb-6">Welcome Back 👋</h1>
@@ -52,13 +44,9 @@
           </div>
         </div>
       </main>
-    </div>
-  </div>
 </template>
 
 <script setup>
-import Navbar from "@/components/Navbar.vue";
-import Sidebar from "@/components/Sidebar.vue";
 
 const recentMedia = [
   { id: 1, title: "Travel Vlog 2025", category: "Travel", date: "Sep 28" },

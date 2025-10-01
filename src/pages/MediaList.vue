@@ -1,7 +1,15 @@
 <!-- src/pages/MediaList.vue -->
 <template>
   <div class="p-6 bg-gray-100 min-h-screen">
-    <h1 class="text-2xl font-bold mb-6">Media Library</h1>
+      <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl font-bold">Media Library</h1>
+      <router-link
+        to="/media/create"
+        class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+      >
+        + Create Media
+      </router-link>
+    </div>
 
     <!-- Category Filter -->
     <div class="mb-4 flex gap-2 overflow-x-auto">
@@ -77,7 +85,7 @@ const token = localStorage.getItem("token");
 // Fetch all media items
 async function fetchMedia() {
   try {
-    const res = await fetch("http://localhost:8000/media", {
+    const res = await fetch("http://localhost:8000/media/list", {
       headers: { Authorization: `Bearer ${token}` },
     });
     mediaItems.value = await res.json();
@@ -89,7 +97,7 @@ async function fetchMedia() {
 // Fetch all categories
 async function fetchCategories() {
   try {
-    const res = await fetch("http://localhost:8000/categories", {
+    const res = await fetch("http://localhost:8000/category/list", {
       headers: { Authorization: `Bearer ${token}` },
     });
     categories.value = await res.json();

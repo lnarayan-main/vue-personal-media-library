@@ -1,9 +1,10 @@
-import { defineStore } from "pinia";
-import axios from "axios";
+import { defineStore } from 'pinia'
+import axios from 'axios'
+const BASE_URL = import.meta.env.VITE_API_URL
 
-export const useAuthStore = defineStore("auth", {
+export const useAuthStore = defineStore('auth', {
   state: () => ({
-    token: localStorage.getItem("token") || null,
+    token: localStorage.getItem('token') || null,
     currentUser: null,
   }),
   getters: {
@@ -11,48 +12,54 @@ export const useAuthStore = defineStore("auth", {
   },
   actions: {
     async fetchCurrentUser() {
-      if (!this.token) return;
+      if (!this.token) return
 
       try {
-        const res = await axios.get("http://localhost:8000/user/profile", {
+        const res = await axios.get(BASE_URL + 'user/profile', {
           headers: { Authorization: `Bearer ${this.token}` },
-        });
-        this.currentUser = res.data;
+        })
+        this.currentUser = res.data
       } catch (err) {
         // If token invalid → logout
-        this.logout();
+        console.warn('Token expired or invalid. Logging out.')
+        this.logout()
+      }
+    },
+    async initAuth() {
+      // call this in App.vue onMounted()
+      if (this.token) {
+        await this.fetchCurrentUser()
       }
     },
     async login(credentials) {
       try {
         const res = await axios.post(
-          "http://localhost:8000/auth/login",
+          BASE_URL + 'auth/login',
           {
             email: credentials.email,
             password: credentials.password,
           },
           {
-            headers: { "Content-Type": "application/json" },
-          }
-        );
+            headers: { 'Content-Type': 'application/json' },
+          },
+        )
 
-        this.token = res.data.access_token;
-        localStorage.setItem("token", this.token);
+        this.token = res.data.access_token
+        localStorage.setItem('token', this.token)
 
         // fetch user immediately
-        await this.fetchCurrentUser();
+        await this.fetchCurrentUser()
 
-        return true;
+        return true
       } catch (err) {
-        console.error("Login failed", err);
-        return false;
+        console.error('Login failed', err)
+        return false
       }
     },
     logout() {
-      this.token = null;
-      this.currentUser = null;
-      localStorage.removeItem("token");
+      this.token = null
+      this.currentUser = null
+      localStorage.removeItem('token')
     },
   },
-});
-
+})

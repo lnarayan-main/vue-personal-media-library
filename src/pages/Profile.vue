@@ -4,7 +4,7 @@
     <!-- Header: single card with avatar + basic info -->
     <div class="bg-white rounded-xl shadow-md p-6 mb-6 flex items-center gap-6">
       <img
-        :src="profilePictureUrl || defaultAvatar"
+        :src="getFileUrl(profile.profile_pic_url) || defaultAvatar"
         alt="{{ profile.name }}"
         class="w-20 h-20 rounded-full object-cover border-2 border-indigo-100"
       />
@@ -59,7 +59,7 @@
           <div class="flex items-center gap-4">
             <div class="relative">
               <img
-                :src="preview || profilePictureUrl || defaultAvatar"
+                :src="preview || getFileUrl(profile.profile_pic_url) || defaultAvatar"
                 :alt="profile.name"
                 class="w-24 h-24 rounded-full object-cover border"
               />
@@ -148,11 +148,10 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
 import axios from "axios";
+import { getFileUrl } from "@/utils/helpers";
 
 // Adjust these if your backend URLs differ
-const BASE_URL = "http://localhost:8000"
-const PROFILE_URL = "http://localhost:8000/user/profile"; // GET current user
-const UPDATE_URL = "http://localhost:8000/user/profile"; // PATCH endpoint (your code uses PATCH /profile)
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 // defaults
 const defaultAvatar = "https://avatar.iran.liara.run/public/38";
@@ -201,7 +200,7 @@ async function fetchProfile() {
     return;
   }
   try {
-    const res = await axios.get(PROFILE_URL, {
+    const res = await axios.get(BASE_URL + "user/profile", {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -280,7 +279,7 @@ async function submitForm() {
     if (selectedFile.value) fd.append("profile_pic", selectedFile.value);
     if (form.value.newPassword) fd.append("password", form.value.newPassword);
 
-    const res = await axios.patch(UPDATE_URL, fd, {
+    const res = await axios.patch(BASE_URL + "user/profile", fd, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",

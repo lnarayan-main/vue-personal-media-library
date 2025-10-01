@@ -19,10 +19,13 @@
 <script setup>
 import Navbar from "./components/Navbar.vue";
 import Sidebar from "./components/Sidebar.vue";
+import { onMounted } from "vue";
 import { useAuthStore } from "./stores/auth";
 
 const auth = useAuthStore();
-auth.fetchCurrentUser(); 
 
+onMounted(() => {
+  auth.initAuth(); // ✅ checks token validity on refresh
+});
 
 </script>

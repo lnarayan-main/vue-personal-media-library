@@ -78,7 +78,7 @@ const route = useRoute();
 const media = ref(null);
 const loading = ref(true);
 const BASE_URL = import.meta.env.VITE_API_URL;
-const MEDIA_URL = import.meta.env.VITE_API_URL + "media/detail/";
+const MEDIA_URL = BASE_URL + "media/detail/";
 
 function getToken() {
   return localStorage.getItem("token");

@@ -48,6 +48,8 @@
 <script setup>
 import { ref, onMounted } from "vue";
 
+const BASE_URL = import.meta.env.VITE_API_URL;
+
 const categories = ref([]);
 const newCategoryName = ref("");
 
@@ -57,7 +59,7 @@ const token = localStorage.getItem("token");
 // Fetch categories from backend
 async function fetchCategories() {
   try {
-    const res = await fetch("http://localhost:8000/categories", {
+    const res = await fetch(BASE_URL + "category/list", {
       headers: { Authorization: `Bearer ${token}` },
     });
     categories.value = await res.json();
@@ -71,7 +73,7 @@ async function addCategory() {
   if (!newCategoryName.value.trim()) return;
 
   try {
-    const res = await fetch("http://localhost:8000/categories", {
+    const res = await fetch(BASE_URL + "category/create", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -93,7 +95,7 @@ async function addCategory() {
 // Update category
 async function updateCategory(category) {
   try {
-    await fetch(`http://localhost:8000/categories/${category.id}`, {
+    await fetch(`${BASE_URL}category/update/${category.id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -109,7 +111,7 @@ async function updateCategory(category) {
 // Delete category
 async function deleteCategory(id) {
   try {
-    await fetch(`http://localhost:8000/categories/${id}`, {
+    await fetch(`${BASE_URL}category/delete/${id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
     });

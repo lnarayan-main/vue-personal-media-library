@@ -6,7 +6,8 @@ export function getFileUrl(file_url){
         return null;
     }
 
-    return BASE_URL + file_url;
+    // return BASE_URL + file_url;
+    return buildUrl(BASE_URL, file_url);
 }
 
 
@@ -47,4 +48,10 @@ export function getStatusColor(status) {
         default:
             return 'text-gray-600 bg-gray-100';
     }
+}
+
+
+function buildUrl(base, path) {
+  if (!base) return path;
+  return `${base.replace(/\/+$/, '')}/${path.replace(/^\/+/, '')}`;
 }

@@ -183,7 +183,7 @@
 import { ref, onMounted } from "vue";
 import axios from "axios";
 
-const MEDIA_CREATE_URL = "http://localhost:8000/media/create";
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 const form = ref({
   title: "",
@@ -242,7 +242,7 @@ function triggerThumbnailInput() {
 async function fetchCategories() {
   const token = getToken();
   try {
-    const res = await axios.get("http://localhost:8000/category/list", {
+    const res = await axios.get(BASE_URL + "category/list", {
       headers: { Authorization: `Bearer ${token}` },
     });
     categories.value = res.data;
@@ -299,7 +299,7 @@ async function submitForm() {
     fd.append("file", selectedFile.value);
     if (selectedThumbnail.value) fd.append("thumbnail", selectedThumbnail.value);
 
-    const res = await axios.post(MEDIA_CREATE_URL, fd, {
+    const res = await axios.post(BASE_URL + "media/create", fd, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",

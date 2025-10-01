@@ -1,5 +1,6 @@
 // src/router/index.js
 import { createRouter, createWebHistory } from "vue-router";
+import { useAuthStore } from "@/stores/auth";
 
 import Home from "../pages/Home.vue";
 import Dashboard from "../pages/Dashboard.vue";
@@ -26,6 +27,17 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+});
+
+// Navigation Guard
+router.beforeEach(async (to, from, next) => {
+  const auth = useAuthStore();
+
+  if (to.meta.requiresAuth && !auth.isLoggedIn) {
+    return next("/login"); // redirect guest to login
+  }
+
+  next();
 });
 
 export default router;

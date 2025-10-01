@@ -24,12 +24,13 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <!-- Example Media Cards -->
         <MediaCard
-          v-for="item in featuredMedia"
+          v-for="item in mediaItems"
           :key="item.id"
           :title="item.title"
           :description="item.description"
-          :thumbnail="item.thumbnail"
-          :type="item.type"
+          :thumbnail="item.media_type === 'image' ? item.file_url : item.thumbnail_url"
+          :file_url="item.file_url"
+          :type="item.media_type"
         />
       </div>
     </section>
@@ -39,30 +40,51 @@
 <script setup>
 import MediaCard from "../components/MediaCard.vue";
 
-const featuredMedia = [
-  {
-    id: 1,
-    title: "Sunset Landscape",
-    description: "A breathtaking view of the mountains during sunset.",
-    thumbnail:
-      "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?w=500",
-    type: "image",
-  },
-  {
-    id: 2,
-    title: "Relaxing Music",
-    description: "Calm your mind with soothing instrumental audio.",
-    thumbnail:
-      "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500",
-    type: "audio",
-  },
-  {
-    id: 3,
-    title: "Adventure Vlog",
-    description: "Join us on an epic adventure through the wild!",
-    thumbnail:
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=500",
-    type: "video",
-  },
-];
+import { getFileUrl } from "@/utils/helpers";
+import { ref, onMounted, computed } from "vue";
+
+// Media and Categories state
+const mediaItems = ref([]);
+const categories = ref([]);
+const selectedCategory = ref(null);
+const BASE_URL = import.meta.env.VITE_API_URL;
+
+// Get token from localStorage
+const token = localStorage.getItem("token");
+
+// Fetch all media items
+async function fetchMedia() {
+  try {
+    const res = await fetch(BASE_URL + "media/list", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    mediaItems.value = await res.json();
+  } catch (err) {
+    console.error("Failed to fetch media items", err);
+  }
+}
+
+// Fetch all categories
+async function fetchCategories() {
+  try {
+    const res = await fetch(BASE_URL + "category/list", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    categories.value = await res.json();
+  } catch (err) {
+    console.error("Failed to fetch categories", err);
+  }
+}
+
+// Filtered media based on selected category
+const filteredMedia = computed(() => {
+  if (!selectedCategory.value) return mediaItems.value;
+  return mediaItems.value.filter((m) => m.category_id === selectedCategory.value);
+});
+
+// Load data on mounted
+onMounted(() => {
+  fetchCategories();
+  fetchMedia();
+});
 </script>

@@ -3,7 +3,7 @@
     class="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden"
   >
     <img
-      :src="thumbnail"
+      :src="getFileUrl(thumbnail)"
       alt="Media thumbnail"
       class="w-full h-48 object-cover"
     />
@@ -27,10 +27,13 @@
 </template>
 
 <script setup>
+import { getFileUrl } from '@/utils/helpers';
+
 defineProps({
   title: String,
   description: String,
   thumbnail: String,
+  file_url: String,
   type: String,
 });
 </script>

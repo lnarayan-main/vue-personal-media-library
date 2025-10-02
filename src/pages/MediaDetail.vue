@@ -4,7 +4,7 @@
     <!-- Back Button -->
     <button @click="goBack"
       class="inline-block mb-6 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
-      ← Back to Media List
+      ￩ Back to Media List
     </button>
 
     <!-- Media Content -->
@@ -52,9 +52,11 @@
 
         <!-- Actions (for later: edit/delete if owner) -->
         <div class="mt-6 flex gap-4">
-          <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
-            Edit
-          </button>
+          <router-link :to="`/media/update/${media.id}`">
+            <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+              Edit
+            </button>
+          </router-link>
           <button class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
             Delete
           </button>

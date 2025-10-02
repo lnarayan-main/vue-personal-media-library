@@ -1,5 +1,6 @@
 
 const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL || 'http://localhost:8000/';
+import router from "@/router";
 
 export function getFileUrl(file_url){
     if (!file_url){
@@ -55,3 +56,12 @@ function buildUrl(base, path) {
   if (!base) return path;
   return `${base.replace(/\/+$/, '')}/${path.replace(/^\/+/, '')}`;
 }
+
+
+export function goBack(path){
+  if (window.history.length > 1) {
+    router.back();
+  } else {
+    router.push(path);
+  }
+};

@@ -56,9 +56,11 @@
         <div>
           <button
             type="submit"
+            :disabled="saving"
             class="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition"
           >
-            Register
+             <span v-if="saving">Registering...</span>
+            <span v-else>Register</span>
           </button>
         </div>
       </form>
@@ -79,6 +81,7 @@ import { useRouter } from "vue-router";
 const BASE_URL = import.meta.env.VITE_API_URL;
 
 const router = useRouter();
+const saving = ref(false);
 
 const form = ref({
   name: "",
@@ -95,6 +98,7 @@ const handleFileUpload = (event) => {
 // Submit form
 const registerUser = async () => {
   try {
+    saving.value = true;
     const formData = new FormData();
     formData.append("name", form.value.name);
     formData.append("email", form.value.email);
@@ -113,6 +117,8 @@ const registerUser = async () => {
   } catch (error) {
     console.error(error);
     alert(error.response?.data?.detail || "Registration failed");
+  } finally {
+    saving.value = false;
   }
 };
 </script>

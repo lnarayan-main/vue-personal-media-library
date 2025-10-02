@@ -10,12 +10,12 @@
         Upload, explore, and share your favorite images, videos, and audio
         files — all in one place.
       </p>
-      <router-link
+      <!-- <router-link
         to="/media"
         class="px-6 py-3 bg-yellow-400 text-gray-900 rounded-lg shadow-md font-semibold hover:bg-yellow-300 transition"
       >
         Explore Media
-      </router-link>
+      </router-link> -->
     </section>
 
     <!-- Featured Media Section -->
@@ -57,7 +57,7 @@ const token = localStorage.getItem("token");
 // Fetch all media items
 async function fetchMedia() {
   try {
-    const res = await fetch(BASE_URL + "media/list", {
+    const res = await fetch(BASE_URL + "media/lists", {
       headers: { Authorization: `Bearer ${token}` },
     });
     mediaItems.value = await res.json();

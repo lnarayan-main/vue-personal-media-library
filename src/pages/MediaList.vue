@@ -3,7 +3,7 @@
   <div class="p-6 bg-gray-100 min-h-screen">
     <div class="flex justify-between items-center mb-6">
       <h1 class="text-2xl font-bold">Media Library</h1>
-      <router-link to="/media/create" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
+      <router-link v-if="auth.isLoggedIn" to="/media/create" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
         + Create Media
       </router-link>
     </div>
@@ -62,8 +62,10 @@
 </template>
 
 <script setup>
+import { useAuthStore } from "@/stores/auth";
 import { getFileUrl } from "@/utils/helpers";
 import { ref, onMounted, computed } from "vue";
+const auth = useAuthStore();
 
 // Media and Categories state
 const mediaItems = ref([]);

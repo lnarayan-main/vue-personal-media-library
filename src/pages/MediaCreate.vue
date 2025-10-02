@@ -1,7 +1,15 @@
 <template>
   <main class="flex-1 p-6 bg-gray-50">
     <div class="bg-white rounded-xl shadow-md p-6 max-w-3xl mx-auto">
-      <h1 class="text-2xl font-bold mb-4">Create Media</h1>
+      <div class="flex items-center justify-between mt-3">
+         <h1 class="text-2xl font-bold mb-4">Create Media</h1>
+           <button
+            @click="goBack('/media')"
+            class="px-5 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-700 disabled:opacity-60"
+          >
+            Back
+          </button>
+      </div>
 
       <form @submit.prevent="submitForm" class="space-y-6">
         <!-- Title -->
@@ -182,6 +190,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import axios from "axios";
+import { goBack } from "@/utils/helpers";
 
 const BASE_URL = import.meta.env.VITE_API_URL;
 

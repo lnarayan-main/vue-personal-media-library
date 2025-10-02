@@ -11,9 +11,10 @@ import Login from "../pages/Login.vue";
 import Register from "../pages/Register.vue";
 import Profile from "../pages/Profile.vue";
 import MediaCreate from "../pages/MediaCreate.vue";
+import MediaEdit from "../pages/MediaEdit.vue";
 
 const routes = [
-  { path: "/home", name: "Home", component: Home },
+  { path: "/home", name: "Home", component: Home, meta: { requiresAuth: false } },
   { path: "/dashboard", name: "Dashboard", component: Dashboard },
   { path: "/media", name: "MediaList", component: MediaList },
   { path: "/media/detail/:id", name: "MediaDetail", component: MediaDetail, props: true },
@@ -22,6 +23,7 @@ const routes = [
   { path: "/register", name: "Register", component: Register},
   { path: "/profile", name: "Profile", component: Profile},
   { path: "/media/create", name: "MediaCreate", component: MediaCreate},
+  { path: "/media/update/:id", name: "MediaEdit", component: MediaEdit, props: true},
 ];
 
 const router = createRouter({

@@ -3,35 +3,55 @@
     class="bg-white shadow-md px-6 py-3 flex items-center justify-between sticky top-0 z-50"
   >
     <!-- Logo -->
-    <router-link to="/" class="text-2xl font-bold text-indigo-600">
+    <router-link to="/home" class="text-2xl font-bold text-indigo-600">
       MediaHub
     </router-link>
 
     <!-- Navigation Links -->
     <div class="hidden md:flex space-x-6">
       <router-link
-        to="/"
-        class="text-gray-700 hover:text-indigo-600 font-medium"
+        to="/home"
+        :class="[
+          'text-gray-700 hover:text-indigo-600 font-medium',
+          route.path.startsWith('/home') 
+            ? 'text-indigo-600' 
+            : 'text-gray-700'
+        ]"
       >
         Home
       </router-link>
       <router-link
         to="/media"
-        class="text-gray-700 hover:text-indigo-600 font-medium"
+        :class="[
+          'text-gray-700 hover:text-indigo-600 font-medium',
+          route.path.startsWith('/media') 
+            ? 'text-indigo-600' 
+            : 'text-gray-700'
+        ]"
       >
         Media
       </router-link>
       <router-link
         v-if="auth.isLoggedIn"
         to="/categories"
-        class="text-gray-700 hover:text-indigo-600 font-medium"
+        :class="[
+          'text-gray-700 hover:text-indigo-600 font-medium',
+          route.path.startsWith('/categories') 
+            ? 'text-indigo-600' 
+            : 'text-gray-700'
+        ]"
       >
         Categories
       </router-link>
       <router-link
         v-if="auth.isLoggedIn" 
         to="/dashboard"
-        class="text-gray-700 hover:text-indigo-600 font-medium"
+        :class="[
+          'text-gray-700 hover:text-indigo-600 font-medium',
+          route.path.startsWith('/dashboard') 
+            ? 'text-indigo-600' 
+            : 'text-gray-700'
+        ]"
       >
         Dashboard
       </router-link>
@@ -80,6 +100,8 @@ function logout() {
 
 <script setup>
 import { useAuthStore } from '@/stores/auth';
+import { useRoute } from 'vue-router';
 
 const auth = useAuthStore();
+const route = useRoute();
 </script>

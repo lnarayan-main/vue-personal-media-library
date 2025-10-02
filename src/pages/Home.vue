@@ -26,11 +26,13 @@
         <MediaCard
           v-for="item in mediaItems"
           :key="item.id"
+          :media_id="item.id"
           :title="item.title"
           :description="item.description"
           :thumbnail="item.media_type === 'image' ? item.file_url : item.thumbnail_url"
           :file_url="item.file_url"
           :type="item.media_type"
+          :media="item"
         />
       </div>
     </section>

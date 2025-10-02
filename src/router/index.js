@@ -13,7 +13,7 @@ import Profile from "../pages/Profile.vue";
 import MediaCreate from "../pages/MediaCreate.vue";
 
 const routes = [
-  { path: "/", name: "Home", component: Home },
+  { path: "/home", name: "Home", component: Home },
   { path: "/dashboard", name: "Dashboard", component: Dashboard },
   { path: "/media", name: "MediaList", component: MediaList },
   { path: "/media/detail/:id", name: "MediaDetail", component: MediaDetail, props: true },

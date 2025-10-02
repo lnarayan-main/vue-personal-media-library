@@ -2,10 +2,10 @@
 <template>
   <div class="min-h-screen bg-gray-50 p-6">
     <!-- Back Button -->
-    <router-link to="/media"
+    <button @click="goBack"
       class="inline-block mb-6 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
       ← Back to Media List
-    </router-link>
+    </button>
 
     <!-- Media Content -->
     <div v-if="media" class="bg-white rounded-2xl shadow-lg p-6 flex flex-col md:flex-row gap-6">
@@ -73,6 +73,7 @@ import axios from "axios";
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import { getFileUrl } from "@/utils/helpers";
+import router from "@/router";
 
 const route = useRoute();
 const media = ref(null);
@@ -103,6 +104,14 @@ async function fetchProfile() {
     loading.value = false;
   }
 }
+
+const goBack = () => {
+  if (window.history.length > 1) {
+    router.back();
+  } else {
+    router.push('/media');
+  }
+};
 
 
 onMounted(() => {

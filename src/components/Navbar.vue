@@ -7,14 +7,14 @@
 
     <!-- Navigation Links -->
     <div class="hidden md:flex space-x-6">
-      <router-link to="/home" :class="[
+      <!-- <router-link to="/home" :class="[
         'text-gray-700 hover:text-indigo-600 font-medium',
         route.path.startsWith('/home')
           ? 'text-indigo-600'
           : 'text-gray-700'
       ]">
         Home
-      </router-link>
+      </router-link> -->
       <!-- <router-link
         to="/media"
         :class="[
@@ -92,7 +92,7 @@
         </span>
 
         <button @click="toggleDropdown" class="focus:outline-none" ref="profileButton">
-          <img :src="auth.currentUser.profile_pic_url || 'https://avatar.iran.liara.run/public/38'" alt="User Avatar"
+          <img :src="getFileUrl(auth.currentUser.profile_pic_url) || 'https://avatar.iran.liara.run/public/38'" alt="User Avatar"
             class="h-10 w-10 object-cover rounded-full border-2 border-indigo-500 cursor-pointer hover:shadow-lg transition"
             onerror="this.onerror=null; this.src='https://avatar.iran.liara.run/public/38'" />
         </button>
@@ -135,6 +135,7 @@ import { useAuthStore } from '@/stores/auth';
 import { getFileUrl } from '@/utils/helpers';
 import { onMounted, onUnmounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
+import router from "@/router";
 
 const auth = useAuthStore();
 const route = useRoute();

@@ -8,19 +8,19 @@
           <div
             class="bg-white rounded-xl shadow-md p-5 flex flex-col items-center"
           >
-            <span class="text-indigo-600 text-3xl font-bold">120</span>
+            <span class="text-indigo-600 text-3xl font-bold">{{ dashboardData.total_media }}</span>
             <p class="text-gray-600 mt-2">Total Media</p>
           </div>
           <div
             class="bg-white rounded-xl shadow-md p-5 flex flex-col items-center"
           >
-            <span class="text-green-600 text-3xl font-bold">15</span>
+            <span class="text-green-600 text-3xl font-bold">{{ dashboardData.total_categories}}</span>
             <p class="text-gray-600 mt-2">Categories</p>
           </div>
           <div
             class="bg-white rounded-xl shadow-md p-5 flex flex-col items-center"
           >
-            <span class="text-pink-600 text-3xl font-bold">48</span>
+            <span class="text-pink-600 text-3xl font-bold">{{ dashboardData.total_users }}</span>
             <p class="text-gray-600 mt-2">Users</p>
           </div>
         </div>
@@ -47,6 +47,38 @@
 </template>
 
 <script setup>
+import axiosApi from '@/utils/axiosApi';
+import { ref, onMounted, reactive } from 'vue';
+
+const loading = ref(true);
+const error = ref(null);
+
+const dashboardData = reactive({
+  total_media: null,
+  total_users: null,
+  total_categories: null
+});
+
+
+
+async function getDashboardData() {
+  try {
+    const res = await axiosApi.get("admin-dashboard");
+    const resData = res.data;
+    console.log(resData);
+    dashboardData.total_media = resData.total_media,
+    dashboardData.total_users =resData.total_users,
+    dashboardData.total_categories = resData.total_categories
+  } catch (err) {
+      error.value = err.response?.data?.detail || 'Failed to load data.';
+  }
+
+}
+
+
+onMounted(()=>{
+  getDashboardData();
+})
 
 const recentMedia = [
   { id: 1, title: "Travel Vlog 2025", category: "Travel", date: "Sep 28" },

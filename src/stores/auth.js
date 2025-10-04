@@ -9,6 +9,9 @@ export const useAuthStore = defineStore('auth', {
   }),
   getters: {
     isLoggedIn: (state) => !!state.token && !!state.currentUser,
+    role: (state) => state.currentUser?.role || null, // ✅ role getter
+    isAdmin: (state) => state.currentUser?.role === 'admin',
+    isUser: (state) => state.currentUser?.role === 'user',
   },
   actions: {
     async fetchCurrentUser() {

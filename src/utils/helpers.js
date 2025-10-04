@@ -40,11 +40,11 @@ export function truncateString(str, length) {
 
 export function getStatusColor(status) {
     switch (status) {
-        case 'ACTIVE':
+        case 'active':
             return 'text-green-600 bg-green-100';
-        case 'INACTIVE':
+        case 'inactive':
             return 'text-red-600 bg-red-100';
-        case 'PENDING':
+        case 'pending':
             return 'text-yellow-600 bg-yellow-100';
         default:
             return 'text-gray-600 bg-gray-100';
@@ -65,3 +65,8 @@ export function goBack(path){
     router.push(path);
   }
 };
+
+
+export function getToken() {
+  return localStorage.getItem("token");
+}

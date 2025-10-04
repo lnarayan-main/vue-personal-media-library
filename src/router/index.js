@@ -12,18 +12,20 @@ import Register from "../pages/Register.vue";
 import Profile from "../pages/Profile.vue";
 import MediaCreate from "../pages/MediaCreate.vue";
 import MediaEdit from "../pages/MediaEdit.vue";
+import UsersList from "../pages/UsersList.vue";
 
 const routes = [
   { path: "/home", name: "Home", component: Home, meta: { requiresAuth: false } },
   { path: "/dashboard", name: "Dashboard", component: Dashboard },
   { path: "/media", name: "MediaList", component: MediaList },
-  { path: "/media/detail/:id", name: "MediaDetail", component: MediaDetail, props: true },
+  { path: "/media/detail/:id", name: "MediaDetail", component: MediaDetail, props: true, meta: { requiresAuth: false } },
   { path: "/categories", name: "Categories", component: Categories },
   { path: "/login", name: "Login", component: Login },
   { path: "/register", name: "Register", component: Register},
   { path: "/profile", name: "Profile", component: Profile},
   { path: "/media/create", name: "MediaCreate", component: MediaCreate},
   { path: "/media/update/:id", name: "MediaEdit", component: MediaEdit, props: true},
+  { path: "/users", name: "UsersList", component: UsersList},
 ];
 
 const router = createRouter({

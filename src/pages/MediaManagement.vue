@@ -7,7 +7,7 @@ import { PencilIcon, TrashIcon, ArrowPathIcon, EyeIcon } from '@heroicons/vue/20
 import { getFileUrl, getStatusColor } from '@/utils/helpers';
 import { UserIcon } from '@heroicons/vue/20/solid';
 
-const users = ref([]);
+const items = ref([]);
 const loading = ref(true);
 const error = ref(null);
 const searchTerm = ref("");
@@ -22,49 +22,47 @@ const pagination = reactive({
 });
 
 // Corrected to use console.log() instead of alert() to avoid compilation issues
-function handleEdit(userId) {
+function handleEdit(mediaId) {
     // In a real application, this would use the router:
     // router.push({ name: 'user-edit', params: { id: userId } });
-    console.log(`Editing user ID: ${userId}`);
+    console.log(`Editing user ID: ${mediaId}`);
 }
 
 // Corrected to use console.log() instead of confirm() and alert()
-async function handleDelete(userId) {
+async function handleDelete(mediaId) {
     // In a real application, a custom modal would confirm the action here.
-    console.log(`Preparing to delete user ID: ${userId}`);
+    console.log(`Preparing to delete user ID: ${mediaId}`);
 
     // Simulate successful delete after confirmation
     // await api.delete(`/users/${userId}`); 
 
     // After successful delete, refresh the list or remove the user locally
-    users.value = users.value.filter(user => user.id !== userId);
-    console.log(`User ID ${userId} deleted from local list.`);
+    media.value = media.value.filter(media => media.id !== mediaId);
+    console.log(`User ID ${mediaId} deleted from local list.`);
 }
 
-async function fetchUsers() {
+async function fetchMedia() {
     loading.value = true;
     error.value = null;
     try {
-        let queryString = `/users?page=${pagination.page}&size=${pagination.size}`;
+        let queryString = `media-management?page=${pagination.page}&size=${pagination.size}`;
 
-        if (appliedSearch.value) {
+        if(appliedSearch.value){
             queryString += `&search=${encodeURIComponent(appliedSearch.value)}`;
         }
 
-        // const res = await axiosApi.get(`users?page=${pagination.page}&size=${pagination.size}`);
+        // const res = await axiosApi.get(`media-management?page=${pagination.page}&size=${pagination.size}`);
         const res = await axiosApi.get(queryString);
+
         const resData = res.data;
 
-        users.value = resData.items;
+        items.value = resData.items;
         pagination.totalCount = resData.total_count;
         pagination.page = resData.page;
         pagination.size = resData.size;
-        
-        pagination.totalPages = resData.total_pages;
-
+        pagination.totalPages = resData.total_pages
     } catch (err) {
-        // Handle 401/403 errors appropriately
-        error.value = err.response?.data?.detail || 'Failed to load users. Check console for details.';
+        error.value = err.response?.data?.detail || 'Failed to load media. Check console for details.';
         console.error("API Error:", err);
     } finally {
         loading.value = false;
@@ -74,42 +72,42 @@ async function fetchUsers() {
 function applySearch(){
     appliedSearch.value = searchTerm.value;
     pagination.page = 1;
-    fetchUsers();
+    fetchMedia();
 }
 
 function changePage(newPage) {
     if (newPage > 0 && newPage <= pagination.totalPages) {
         pagination.page = newPage;
-        fetchUsers();
+        fetchMedia();
     }
 }
 
 async function onChangeStatus(e) {
     try {
         const status = e.target.value;
-        const userId = e.target.dataset.id;
+        const mediaId = e.target.dataset.id;
 
         const payload = {
-            id: Number(userId),
+            id: Number(mediaId),
             status: status
         }
 
-        const res = await axiosApi.post('user/change-status', payload);
+        const res = await axiosApi.post('media/change-status', payload);
         alert(res.data?.detail);
     } catch (err) {
-        error.value = err.response?.data?.detail || "Failed to change status of user."
+        error.value = err.response?.data?.detail || "Failed to change status of media."
     } finally {
         loading.value = false;
     }
 }
 
-onMounted(fetchUsers);
+onMounted(fetchMedia);
 </script>
 
 <template>
     <!-- OUTER CARD (Section Background) -->
     <div class="p-6 bg-gray-50 rounded-xl shadow-xl m-4 border border-gray-100 min-h-[500px]">
-        <h1 class="text-3xl font-extrabold text-gray-800 mb-6 border-b pb-3">User Management</h1>
+        <h1 class="text-3xl font-extrabold text-gray-800 mb-6 border-b pb-3">Media Management</h1>
 
         <!-- Search and Filter Section -->
         <div
@@ -143,7 +141,7 @@ onMounted(fetchUsers);
 
         <!-- LOADING & ERROR STATES (Placed directly inside the outer card) -->
         <div v-if="loading" class="text-indigo-600 font-medium flex items-center justify-center py-20">
-            <ArrowPathIcon class="animate-spin h-6 w-6 mr-2" /> Loading User Data...
+            <ArrowPathIcon class="animate-spin h-6 w-6 mr-2" /> Loading Media Data...
         </div>
         <div v-else-if="error" class="text-red-600 bg-red-50 p-4 rounded-lg border border-red-200">
             Error: {{ error }}
@@ -159,11 +157,11 @@ onMounted(fetchUsers);
                             S.N.</th>
                         <th
                             class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-16">
-                            Profile</th>
+                            Thumbnail</th>
                         <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                            Name</th>
+                            Title</th>
                         <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                            Email</th>
+                            Description</th>
                         <th
                             class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-24">
                             Status</th>
@@ -173,27 +171,24 @@ onMounted(fetchUsers);
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
-                    <tr v-for="(user, i) in users" :key="i" class="hover:bg-indigo-50/50 transition duration-100">
+                    <tr v-for="(media, i) in items" :key="i"
+                        class="hover:bg-indigo-50/50 transition duration-100">
                         <!-- S.N. -->
                         <td class="px-4 py-3 text-sm text-gray-700">{{ i + 1 }}</td>
 
                         <!-- Name -->
                         <td class="px-4 py-3 text-sm font-medium text-gray-800"><img
-                                :src="getFileUrl(user.profile_pic_url) || 'https://placehold.co/40x40/9ca3af/ffffff?text=U'"
-                                alt="Profile Pic" class="w-10 h-10 rounded-full object-cover"
-                                onerror="this.onerror=null; this.src='https://placehold.co/40x40/9ca3af/ffffff?text=U';">
-                        </td>
-                        <td class="px-4 py-3 text-sm font-medium text-gray-800">{{ user.name }}</td>
+                                :src="getFileUrl(media.thumbnail_url)" class="rounded-md" alt="Profile Pic"></td>
+                        <td class="px-4 py-3 text-sm font-medium text-gray-800">{{ media.title }}</td>
 
                         <!-- Email -->
-                        <td class="px-4 py-3 text-sm text-gray-600">{{ user.email }}</td>
+                        <td class="px-4 py-3 text-sm text-gray-600">{{ media.description }}</td>
 
                         <!-- Status -->
                         <td class="px-4 py-3">
-                            <select v-model="user.status" @change="onChangeStatus" :data-id="user.id">
-                                <option value="active">Active</option>
-                                <option value="inactive">Inactive</option>
-                                <option value="pending">Pending</option>
+                            <select v-model="media.status" @change="onChangeStatus" :data-id="media.id">
+                                <option value="ACTIVE">Active</option>
+                                <option value="INACTIVE">Inactive</option>
                             </select>
                         </td>
 
@@ -206,13 +201,13 @@ onMounted(fetchUsers);
                                     <EyeIcon class="h-5 w-5" />
                                 </button>
                                 <!-- Edit Button -->
-                                <button @click="handleEdit(user.id)" title="Edit User"
+                                <button @click="handleEdit(media.id)" title="Edit Media"
                                     class="p-2 rounded-full text-indigo-600 hover:bg-indigo-100 transition duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                     <PencilIcon class="h-5 w-5" />
                                 </button>
 
                                 <!-- Delete Button -->
-                                <button @click="handleDelete(user.id)" title="Delete User"
+                                <button @click="handleDelete(media.id)" title="Delete Media"
                                     class="p-2 rounded-full text-red-600 hover:bg-red-100 transition duration-150 focus:outline-none focus:ring-2 focus:ring-red-500">
                                     <TrashIcon class="h-5 w-5" />
                                 </button>
@@ -222,8 +217,8 @@ onMounted(fetchUsers);
                 </tbody>
             </table>
 
-            <div v-if="users.length === 0 && !loading && !error" class="text-center py-12 text-gray-500">
-                No users found in the system.
+            <div v-if="items.length === 0 && !loading && !error" class="text-center py-12 text-gray-500">
+                No Media found in the system.
             </div>
         </div>
         <div v-if="pagination.totalPages > 1"

@@ -3,11 +3,8 @@
   <main class="flex-1 bg-gray-50 p-6">
     <!-- Header: single card with avatar + basic info -->
     <div class="bg-white rounded-xl shadow-md p-6 mb-6 flex items-center gap-6">
-      <img
-        :src="getFileUrl(profile.profile_pic_url) || defaultAvatar"
-        alt="{{ profile.name }}"
-        class="w-20 h-20 rounded-full object-cover border-2 border-indigo-100"
-      />
+      <img :src="getFileUrl(profile.profile_pic_url) || defaultAvatar" alt="{{ profile.name }}"
+        class="w-20 h-20 rounded-full object-cover border-2 border-indigo-100" />
       <div>
         <h1 class="text-xl font-bold text-gray-800">{{ profile.name }}</h1>
         <p class="text-sm text-gray-600">{{ profile.email }}</p>
@@ -24,33 +21,22 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
-            <input
-              v-model="form.name"
-              type="text"
-              required
-              class="block w-full px-4 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500"
-            />
+            <input v-model="form.name" type="text" required
+              class="block w-full px-4 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500" />
           </div>
 
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-            <input
-              v-model="form.email"
-              type="email"
-              required
-              class="block w-full px-4 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500"
-            />
+            <input v-model="form.email" type="email" required
+              class="block w-full px-4 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500" />
           </div>
         </div>
 
         <!-- About (full width) -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">About</label>
-          <textarea
-            v-model="form.about"
-            rows="3"
-            class="block w-full px-4 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500"
-          ></textarea>
+          <textarea v-model="form.about" rows="3"
+            class="block w-full px-4 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500"></textarea>
         </div>
 
         <!-- Avatar + Passwords row -->
@@ -58,63 +44,40 @@
           <!-- Left: avatar preview + change button -->
           <div class="flex items-center gap-4">
             <div class="relative">
-              <img
-                :src="preview || getFileUrl(profile.profile_pic_url) || defaultAvatar"
-                :alt="profile.name"
-                class="w-24 h-24 rounded-full object-cover border"
-              />
+              <img :src="preview || getFileUrl(profile.profile_pic_url) || defaultAvatar" :alt="profile.name"
+                class="w-24 h-24 rounded-full object-cover border" />
             </div>
 
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Profile Picture</label>
               <div class="flex items-center gap-2">
-                <button
-                  type="button"
-                  @click="triggerFile"
-                  class="px-3 py-2 bg-gray-100 border border-gray-300 rounded-md text-sm hover:bg-gray-200"
-                >
+                <button type="button" @click="triggerFile"
+                  class="px-3 py-2 bg-gray-100 border border-gray-300 rounded-md text-sm hover:bg-gray-200">
                   Change Photo
                 </button>
-                <button
-                  v-if="profile.avatar || preview"
-                  type="button"
-                  @click="removeSelectedPhoto"
-                  class="px-3 py-2 bg-red-50 border border-red-200 rounded-md text-sm text-red-600 hover:bg-red-100"
-                >
+                <button v-if="profile.avatar || preview" type="button" @click="removeSelectedPhoto"
+                  class="px-3 py-2 bg-red-50 border border-red-200 rounded-md text-sm text-red-600 hover:bg-red-100">
                   Remove
                 </button>
               </div>
 
               <p class="text-xs text-gray-500 mt-2">Max 2MB. JPG/PNG recommended.</p>
-              <input
-                ref="fileInput"
-                type="file"
-                accept="image/*"
-                class="hidden"
-                @change="onFileChange"
-              />
+              <input ref="fileInput" type="file" accept="image/*" class="hidden" @change="onFileChange" />
             </div>
           </div>
 
           <!-- Right: password fields -->
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">New Password</label>
-            <input
-              v-model="form.newPassword"
-              type="password"
-              placeholder="Leave blank to keep current password"
-              class="block w-full px-4 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500"
-            />
+            <input v-model="form.newPassword" type="password" placeholder="Leave blank to keep current password"
+              class="block w-full px-4 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500" />
 
             <label class="block text-sm font-medium text-gray-700 mb-1 mt-4">Confirm Password</label>
-            <input
-              v-model="form.confirmPassword"
-              type="password"
-              placeholder="Confirm new password"
-              class="block w-full px-4 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500"
-            />
+            <input v-model="form.confirmPassword" type="password" placeholder="Confirm new password"
+              class="block w-full px-4 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500" />
 
-            <p class="text-sm text-gray-500 mt-3">Leave password fields blank if you don’t want to change your password.</p>
+            <p class="text-sm text-gray-500 mt-3">Leave password fields blank if you don’t want to change your password.
+            </p>
 
             <p v-if="passwordError" class="text-sm text-red-600 mt-2">{{ passwordError }}</p>
           </div>
@@ -127,11 +90,8 @@
 
         <!-- Buttons -->
         <div class="flex items-center gap-4">
-          <button
-            type="submit"
-            :disabled="saving"
-            class="px-5 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-60"
-          >
+          <button type="submit" :disabled="saving"
+            class="px-5 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-60">
             <span v-if="saving">Saving...</span>
             <span v-else>Save Changes</span>
           </button>
@@ -262,7 +222,10 @@ async function submitForm() {
     if (selectedFile.value) fd.append("profile_pic", selectedFile.value);
     if (form.value.newPassword) fd.append("password", form.value.newPassword);
 
-    const res = await axiosApi.patch('user/profile', fd);
+    const res = await axiosApi.patch('user/profile', fd, {
+      headers:
+        { "Content-Type": "multipart/form-data" }
+    });
 
     // update local profile and reset state
     profile.value = { ...res.data };

@@ -7,7 +7,7 @@ import axiosApi from "@/utils/axiosApi";
 const route = useRoute();
 const router = useRouter();
 
-const token = ref(route.query.token || ""); // Token from URL query param
+const token = ref(route.params.token || ""); // Token from URL query param
 const password = ref("");
 const confirmPassword = ref("");
 const message = ref("");

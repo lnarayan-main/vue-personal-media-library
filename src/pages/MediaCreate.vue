@@ -189,8 +189,8 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import axios from "axios";
 import { goBack } from "@/utils/helpers";
+import axiosApi from "@/utils/axiosApi";
 
 const BASE_URL = import.meta.env.VITE_API_URL;
 
@@ -216,10 +216,6 @@ const thumbnailInput = ref(null);
 
 const saving = ref(false);
 const message = ref({ text: "", type: "" });
-
-function getToken() {
-  return localStorage.getItem("token");
-}
 
 // Function to determine the accepted file type for the media input based on the dropdown selection
 function getMediaAcceptType() {
@@ -249,11 +245,8 @@ function triggerThumbnailInput() {
 }
 
 async function fetchCategories() {
-  const token = getToken();
   try {
-    const res = await axios.get(BASE_URL + "category/list", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const res = await axiosApi.get("category/list");
     categories.value = res.data;
   } catch (err) {
     console.error("Failed to fetch categories", err);
@@ -282,18 +275,12 @@ function resetForm() {
   selectedThumbnail.value = null;
   filePreview.value = null;
   thumbnailPreview.value = null;
-  message.value = { text: "", type: "" };
+  // message.value = { text: "", type: "" };
 }
 
 async function submitForm() {
   if (!selectedFile.value) {
     message.value = { text: "Media file is required.", type: "error" };
-    return;
-  }
-
-  const token = getToken();
-  if (!token) {
-    message.value = { text: "Not authenticated.", type: "error" };
     return;
   }
 
@@ -308,11 +295,15 @@ async function submitForm() {
     fd.append("file", selectedFile.value);
     if (selectedThumbnail.value) fd.append("thumbnail", selectedThumbnail.value);
 
-    const res = await axios.post(BASE_URL + "media/create", fd, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "multipart/form-data",
-      },
+    // const res = await axios.post(BASE_URL + "media/create", fd, {
+    //   headers: {
+    //     Authorization: `Bearer ${token}`,
+    //     "Content-Type": "multipart/form-data",
+    //   },
+    // });
+
+    const res = await axiosApi.post("media/create", fd, {
+      headers: {"Content-Type": "multipart/form-data"}
     });
 
     message.value = { text: "Media created successfully!", type: "success" };

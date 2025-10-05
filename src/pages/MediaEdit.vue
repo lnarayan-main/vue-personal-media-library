@@ -142,8 +142,8 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import axios from "axios";
 import { getFileUrl, goBack } from "@/utils/helpers";
+import axiosApi from "@/utils/axiosApi";
 
 const route = useRoute();
 const router = useRouter();
@@ -165,10 +165,6 @@ const thumbnailPreview = ref(null);
 
 const saving = ref(false);
 const message = ref({ text: "", type: "" });
-
-function getToken() {
-  return localStorage.getItem("token");
-}
 
 function getMediaAcceptType() {
   switch (form.value.media_type) {
@@ -200,11 +196,8 @@ function onThumbnailChange(e) {
 }
 
 async function fetchCategories() {
-  const token = getToken();
   try {
-    const res = await axios.get(BASE_URL + "category/list", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const res = await axiosApi.get("category/list");
     categories.value = res.data;
   } catch (err) {
     console.error("Failed to fetch categories", err);
@@ -212,12 +205,9 @@ async function fetchCategories() {
 }
 
 async function fetchMedia() {
-  const token = getToken();
   const mediaId = route.params.id;
   try {
-    const res = await axios.get(BASE_URL + `media/detail/${mediaId}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const res = await axiosApi.get(`media/detail/${mediaId}`);
 
     const data = res.data;
     form.value = {
@@ -236,12 +226,6 @@ async function fetchMedia() {
 }
 
 async function submitForm() {
-  const token = getToken();
-  if (!token) {
-    message.value = { text: "Not authenticated.", type: "error" };
-    return;
-  }
-
   saving.value = true;
   try {
     const fd = new FormData();
@@ -253,11 +237,10 @@ async function submitForm() {
     if (selectedFile.value) fd.append("file", selectedFile.value);
     if (selectedThumbnail.value) fd.append("thumbnail", selectedThumbnail.value);
 
-    await axios.put(BASE_URL + `media/update/${route.params.id}`, fd, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "multipart/form-data",
-      },
+    const res = await axiosApi.put(`media/update/${route.params.id}`, fd, { 
+        headers: {
+            "Content-Type": "multipart/form-data", 
+        },
     });
 
     message.value = { text: "Media updated successfully!", type: "success" };

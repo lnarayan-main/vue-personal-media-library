@@ -149,6 +149,7 @@
 import { ref, onMounted, computed } from "vue";
 import axios from "axios";
 import { getFileUrl } from "@/utils/helpers";
+import axiosApi from "@/utils/axiosApi";
 
 // Adjust these if your backend URLs differ
 const BASE_URL = import.meta.env.VITE_API_URL;
@@ -188,21 +189,9 @@ const saving = ref(false);
 const message = ref({ text: "", type: "" });
 const passwordError = ref("");
 
-// helpers
-function getToken() {
-  return localStorage.getItem("token");
-}
-
 async function fetchProfile() {
-  const token = getToken();
-  if (!token) {
-    // redirect to login or handle unauthenticated case
-    return;
-  }
   try {
-    const res = await axios.get(BASE_URL + "user/profile", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const res = await axiosApi.get("user/profile");
 
     profile.value = { ...res.data };
     // populate form with current values
@@ -264,12 +253,6 @@ async function submitForm() {
     }
   }
 
-  const token = getToken();
-  if (!token) {
-    message.value = { text: "Not authenticated.", type: "error" };
-    return;
-  }
-
   saving.value = true;
   try {
     const fd = new FormData();
@@ -279,12 +262,7 @@ async function submitForm() {
     if (selectedFile.value) fd.append("profile_pic", selectedFile.value);
     if (form.value.newPassword) fd.append("password", form.value.newPassword);
 
-    const res = await axios.patch(BASE_URL + "user/profile", fd, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    const res = await axiosApi.patch('user/profile', fd);
 
     // update local profile and reset state
     profile.value = { ...res.data };

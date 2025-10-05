@@ -63,6 +63,7 @@
 
 <script setup>
 import { useAuthStore } from "@/stores/auth";
+import axiosApi from "@/utils/axiosApi";
 import { getFileUrl } from "@/utils/helpers";
 import { ref, onMounted, computed } from "vue";
 const auth = useAuthStore();
@@ -73,16 +74,11 @@ const categories = ref([]);
 const selectedCategory = ref(null);
 const BASE_URL = import.meta.env.VITE_API_URL;
 
-// Get token from localStorage
-const token = localStorage.getItem("token");
-
 // Fetch all media items
 async function fetchMedia() {
   try {
-    const res = await fetch(BASE_URL + "media/list", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    mediaItems.value = await res.json();
+    const res = await axiosApi.get("media/list");
+    mediaItems.value = await res.data;
   } catch (err) {
     console.error("Failed to fetch media items", err);
   }
@@ -91,10 +87,8 @@ async function fetchMedia() {
 // Fetch all categories
 async function fetchCategories() {
   try {
-    const res = await fetch(BASE_URL + "category/list", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    categories.value = await res.json();
+    const res = await axiosApi.get("category/list");
+    categories.value = res.data;
   } catch (err) {
     console.error("Failed to fetch categories", err);
   }

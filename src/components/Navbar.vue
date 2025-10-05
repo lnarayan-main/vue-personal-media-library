@@ -1,7 +1,7 @@
 <template>
   <nav class="bg-white shadow-md px-6 py-3 flex items-center justify-between sticky top-0 z-50">
     <!-- Logo -->
-    <router-link to="/home" class="text-2xl font-bold text-indigo-600">
+    <router-link to="/" class="text-2xl font-bold text-indigo-600">
       MediaHub
     </router-link>
 
@@ -148,7 +148,7 @@ const toggleDropdown = () => {
   isDropdownOpen.value = !isDropdownOpen.value;
 };
 
-const handleLogout = () => {
+const handleLogout = async () => {
   auth.logout();
   isDropdownOpen.value = false;
   router.push('/login');

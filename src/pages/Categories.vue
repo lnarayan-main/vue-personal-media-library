@@ -6,16 +6,9 @@
     <!-- Add New Category -->
     <div class="mb-6">
       <form @submit.prevent="addCategory" class="flex gap-2">
-        <input
-          v-model="newCategoryName"
-          type="text"
-          placeholder="New Category Name"
-          class="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <button
-          type="submit"
-          class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-        >
+        <input v-model="newCategoryName" type="text" placeholder="New Category Name"
+          class="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
           Add
         </button>
       </form>
@@ -23,21 +16,13 @@
 
     <!-- Categories List -->
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-      <div
-        v-for="category in categories"
-        :key="category.id"
-        class="bg-white shadow rounded-lg p-4 flex justify-between items-center"
-      >
+      <div v-for="category in categories" :key="category.id"
+        class="bg-white shadow rounded-lg p-4 flex justify-between items-center">
         <!-- Editable Name -->
-        <input
-          v-model="category.name"
-          @blur="updateCategory(category)"
-          class="flex-1 px-2 py-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-        />
-        <button
-          @click="deleteCategory(category.id)"
-          class="ml-2 px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
-        >
+        <input v-model="category.name" @blur="updateCategory(category)"
+          class="flex-1 px-2 py-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
+        <button @click="deleteCategory(category.id)"
+          class="ml-2 px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600">
           Delete
         </button>
       </div>
@@ -46,6 +31,7 @@
 </template>
 
 <script setup>
+import axiosApi from "@/utils/axiosApi";
 import { ref, onMounted } from "vue";
 
 const BASE_URL = import.meta.env.VITE_API_URL;
@@ -53,16 +39,11 @@ const BASE_URL = import.meta.env.VITE_API_URL;
 const categories = ref([]);
 const newCategoryName = ref("");
 
-// Get token from localStorage
-const token = localStorage.getItem("token");
-
 // Fetch categories from backend
 async function fetchCategories() {
   try {
-    const res = await fetch(BASE_URL + "category/list", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    categories.value = await res.json();
+    const res = await axiosApi.get('category/list');
+    categories.value = await res.data;
   } catch (err) {
     console.error("Failed to fetch categories", err);
   }
@@ -73,18 +54,11 @@ async function addCategory() {
   if (!newCategoryName.value.trim()) return;
 
   try {
-    const res = await fetch(BASE_URL + "category/create", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ name: newCategoryName.value }),
-    });
+    const payload = { name: newCategoryName.value };
 
-    if (!res.ok) throw new Error("Failed to add category");
+    const res = await axiosApi.post('category/create', payload);
 
-    const newCat = await res.json();
+    const newCat = await res.data;
     categories.value.push(newCat);
     newCategoryName.value = "";
   } catch (err) {
@@ -95,14 +69,10 @@ async function addCategory() {
 // Update category
 async function updateCategory(category) {
   try {
-    await fetch(`${BASE_URL}category/update/${category.id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ name: category.name }),
-    });
+    const payload = { name: category.name };
+
+    const res = await axiosApi.put(`category/update/${category.id}`, payload);
+
   } catch (err) {
     console.error(err);
   }
@@ -111,10 +81,7 @@ async function updateCategory(category) {
 // Delete category
 async function deleteCategory(id) {
   try {
-    await fetch(`${BASE_URL}category/delete/${id}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const res = await axiosApi.delete(`category/delete/${id}`);
     categories.value = categories.value.filter((c) => c.id !== id);
   } catch (err) {
     console.error(err);

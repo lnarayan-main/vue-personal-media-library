@@ -76,27 +76,17 @@ import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import { getFileUrl } from "@/utils/helpers";
 import router from "@/router";
+import axiosApi from "@/utils/axiosApi";
 
 const route = useRoute();
 const media = ref(null);
 const loading = ref(true);
-const BASE_URL = import.meta.env.VITE_API_URL;
-const MEDIA_URL = BASE_URL + "media/detail/";
-
-function getToken() {
-  return localStorage.getItem("token");
-}
 
 async function fetchProfile() {
-  const token = getToken();
-  if (!token) {
-    return;
-  }
   try {
     const id = route.params.id;
-    const res = await axios.get(MEDIA_URL + id, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+
+    const res = await axiosApi.get(`media/detail/${id}`);
 
     media.value = { ...res.data };
 

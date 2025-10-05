@@ -40,6 +40,7 @@
 </template>
 
 <script setup>
+import axiosApi from "@/utils/axiosApi";
 import MediaCard from "../components/MediaCard.vue";
 
 import { getFileUrl } from "@/utils/helpers";
@@ -57,10 +58,8 @@ const token = localStorage.getItem("token");
 // Fetch all media items
 async function fetchMedia() {
   try {
-    const res = await fetch(BASE_URL + "media/lists", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    mediaItems.value = await res.json();
+    const res = await axiosApi.get("media/lists");
+    mediaItems.value = await res.data;
   } catch (err) {
     console.error("Failed to fetch media items", err);
   }
@@ -69,10 +68,8 @@ async function fetchMedia() {
 // Fetch all categories
 async function fetchCategories() {
   try {
-    const res = await fetch(BASE_URL + "category/list", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    categories.value = await res.json();
+    const res = await axiosApi.get("category/list");
+    categories.value = await res.data;
   } catch (err) {
     console.error("Failed to fetch categories", err);
   }

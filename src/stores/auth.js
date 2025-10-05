@@ -4,7 +4,8 @@ const BASE_URL = import.meta.env.VITE_API_URL
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    token: localStorage.getItem('token') || null,
+    // token: localStorage.getItem('token') || null,
+    token: localStorage.getItem('token') || sessionStorage.getItem('token') || null,
     currentUser: null,
   }),
   getters: {
@@ -30,6 +31,7 @@ export const useAuthStore = defineStore('auth', {
     },
     async initAuth() {
       // call this in App.vue onMounted()
+      this.loadToken();
       if (this.token) {
         await this.fetchCurrentUser()
       }
@@ -41,15 +43,22 @@ export const useAuthStore = defineStore('auth', {
           {
             email: credentials.email,
             password: credentials.password,
+            remember_me: credentials.rememberMe
           },
           {
             headers: { 'Content-Type': 'application/json' },
           },
         )
 
-        this.token = res.data.access_token
-        localStorage.setItem('token', this.token)
-
+        const token = res.data.access_token
+        
+        if(credentials.rememberMe){
+          localStorage.setItem('token', token);
+        }else {
+          sessionStorage.setItem('token', token);
+        }
+        
+        this.token = token;
         // fetch user immediately
         await this.fetchCurrentUser()
 
@@ -60,9 +69,13 @@ export const useAuthStore = defineStore('auth', {
       }
     },
     logout() {
-      this.token = null
-      this.currentUser = null
-      localStorage.removeItem('token')
+      localStorage.removeItem('token');
+      sessionStorage.removeItem("token");
+      this.token = null;
+      this.currentUser = null;
     },
+    loadToken() {
+      this.token = localStorage.getItem("token") || sessionStorage.getItem("token");
+    }
   },
 })

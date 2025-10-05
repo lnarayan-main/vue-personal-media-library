@@ -66,7 +66,7 @@ const handleSubmit = async () => {
   loading.value = true;
 
   try {
-    const res = await axiosApi.post("/auth/forgot-password", { email: email.value });
+    const res = await axiosApi.post("auth/forgot-password", { email: email.value });
     success.value = res.data.message || "Reset link sent to your email.";
   } catch (err) {
     error.value = err.response?.data?.detail || "Failed to send reset link.";

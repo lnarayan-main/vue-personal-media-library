@@ -295,13 +295,6 @@ async function submitForm() {
     fd.append("file", selectedFile.value);
     if (selectedThumbnail.value) fd.append("thumbnail", selectedThumbnail.value);
 
-    // const res = await axios.post(BASE_URL + "media/create", fd, {
-    //   headers: {
-    //     Authorization: `Bearer ${token}`,
-    //     "Content-Type": "multipart/form-data",
-    //   },
-    // });
-
     const res = await axiosApi.post("media/create", fd, {
       headers: {"Content-Type": "multipart/form-data"}
     });

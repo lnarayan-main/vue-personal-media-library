@@ -14,6 +14,7 @@ import MediaCreate from "../pages/MediaCreate.vue";
 import MediaEdit from "../pages/MediaEdit.vue";
 import UsersList from "../pages/UsersList.vue";
 import ForgotPassword from "../pages/ForgotPassword.vue";
+import ResetPassword from "../pages/ResetPassword.vue";
 
 const routes = [
   { path: "/", name: "Home", component: Home, meta: { requiresAuth: false } },
@@ -28,6 +29,7 @@ const routes = [
   { path: "/media/update/:id", name: "MediaEdit", component: MediaEdit, props: true},
   { path: "/users", name: "UsersList", component: UsersList},
   { path: "/forgot-password", name: "ForgotPassword", component: ForgotPassword},
+  { path: "/reset-password/:token", name: "ResetPassword", component: ResetPassword, props: true},
 ];
 
 const router = createRouter({

@@ -8,7 +8,7 @@
       <div>
         <h1 class="text-xl font-bold text-gray-800">{{ profile.name }}</h1>
         <p class="text-sm text-gray-600">{{ profile.email }}</p>
-        <p class="mt-2 text-gray-500 text-sm">{{ profile.about }}</p>
+        <p class="mt-2 text-gray-500 text-sm line-clamp-2">{{ profile.about }}</p>
       </div>
     </div>
 
@@ -115,7 +115,7 @@ import axiosApi from "@/utils/axiosApi";
 const BASE_URL = import.meta.env.VITE_API_URL;
 
 // defaults
-const defaultAvatar = "https://avatar.iran.liara.run/public/38";
+const defaultAvatar = "/images/default_avatar.jpg";
 
 // reactive state
 const profile = ref({

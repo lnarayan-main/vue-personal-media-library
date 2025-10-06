@@ -6,12 +6,20 @@ import axiosApi from '@/utils/axiosApi';
 import { PencilIcon, TrashIcon, ArrowPathIcon, EyeIcon } from '@heroicons/vue/20/solid';
 import { getFileUrl, getStatusColor } from '@/utils/helpers';
 import { UserIcon } from '@heroicons/vue/20/solid';
+import router from '@/router';
+import DeleteConfirmModal from '@/components/DeleteConfirmModal.vue';
+import { toast } from '@/main';
 
+// --- State Management ---
 const users = ref([]);
 const loading = ref(true);
 const error = ref(null);
+//New state for search term
 const searchTerm = ref("");
 const appliedSearch = ref("");
+// --- Delete Modal State (NEW) ---
+const showDeleteModal = ref(false);
+const userToDelete = ref(null);
 
 const pagination = reactive({
     page: 1,
@@ -28,17 +36,36 @@ function handleEdit(userId) {
     console.log(`Editing user ID: ${userId}`);
 }
 
-// Corrected to use console.log() instead of confirm() and alert()
-async function handleDelete(userId) {
-    // In a real application, a custom modal would confirm the action here.
-    console.log(`Preparing to delete user ID: ${userId}`);
+function handleView(userId) {
+    router.push({ name: 'UserView', params: { id: userId } });
+}
 
-    // Simulate successful delete after confirmation
-    // await api.delete(`/users/${userId}`); 
 
-    // After successful delete, refresh the list or remove the user locally
-    users.value = users.value.filter(user => user.id !== userId);
-    console.log(`User ID ${userId} deleted from local list.`);
+function handleDelete(userId) {
+    userToDelete.value = userId;
+    showDeleteModal.value = true;
+}
+
+async function confirmDelete() {
+    if (userToDelete.value) {
+        try {
+            const res = await axiosApi.get(`user/delete/${userToDelete.value}`);
+            toast.success(res.data.detail || "User deleted successfully!");
+            fetchUsers();
+        } catch (error) {
+            const errMsg = error.response?.data?.detail || "Failed to delete user.";
+            toast.error(errMsg);
+            console.error("Delete error:", errMsg);
+        } finally {
+            showDeleteModal.value = false;
+            userToDelete.value = null;
+        }
+    }
+}
+
+function cancelDelete() {
+    showDeleteModal.value = false;
+    userToDelete.value = null;
 }
 
 async function fetchUsers() {
@@ -59,7 +86,7 @@ async function fetchUsers() {
         pagination.totalCount = resData.total_count;
         pagination.page = resData.page;
         pagination.size = resData.size;
-        
+
         pagination.totalPages = resData.total_pages;
 
     } catch (err) {
@@ -71,7 +98,7 @@ async function fetchUsers() {
     }
 }
 
-function applySearch(){
+function applySearch() {
     appliedSearch.value = searchTerm.value;
     pagination.page = 1;
     fetchUsers();
@@ -201,15 +228,15 @@ onMounted(fetchUsers);
                         <td class="px-4 py-3 text-sm">
                             <div class="flex space-x-2">
                                 <!-- View Button  -->
-                                <button
+                                <button @click="handleView(user.id)" title="View User"
                                     class="p-2 rounded-full text-indigo-600 hover:bg-indigo-100 transition duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                     <EyeIcon class="h-5 w-5" />
                                 </button>
                                 <!-- Edit Button -->
-                                <button @click="handleEdit(user.id)" title="Edit User"
+                                <!-- <button @click="handleEdit(user.id)" title="Edit User"
                                     class="p-2 rounded-full text-indigo-600 hover:bg-indigo-100 transition duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                     <PencilIcon class="h-5 w-5" />
-                                </button>
+                                </button> -->
 
                                 <!-- Delete Button -->
                                 <button @click="handleDelete(user.id)" title="Delete User"
@@ -284,6 +311,10 @@ onMounted(fetchUsers);
                 </div>
             </div>
         </div>
+        <!-- Delete Confirmation Modal -->
+        <DeleteConfirmModal :show="showDeleteModal" :userId="userToDelete" @cancel="cancelDelete"
+            @confirm="confirmDelete" />
+
     </div>
 </template>
 

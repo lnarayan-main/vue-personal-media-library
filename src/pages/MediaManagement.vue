@@ -201,10 +201,10 @@ onMounted(fetchMedia);
                                     <EyeIcon class="h-5 w-5" />
                                 </button>
                                 <!-- Edit Button -->
-                                <button @click="handleEdit(media.id)" title="Edit Media"
+                                <!-- <button @click="handleEdit(media.id)" title="Edit Media"
                                     class="p-2 rounded-full text-indigo-600 hover:bg-indigo-100 transition duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                     <PencilIcon class="h-5 w-5" />
-                                </button>
+                                </button> -->
 
                                 <!-- Delete Button -->
                                 <button @click="handleDelete(media.id)" title="Delete Media"

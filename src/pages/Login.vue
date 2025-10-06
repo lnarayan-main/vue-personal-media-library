@@ -74,7 +74,7 @@ const loading = ref(false);
 const rememberMe = ref(localStorage.getItem("remember_me") === "true");
 
 const handleLogin = async () => {
-  const success = await auth.login({
+  const {success, message} = await auth.login({
     email: email.value,
     password: password.value,
     rememberMe: rememberMe.value
@@ -89,7 +89,7 @@ const handleLogin = async () => {
     }
     router.push("/dashboard");
   } else {
-    error.value = "Invalid credentials";
+    error.value = message;
   }
 };
 </script>

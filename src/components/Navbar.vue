@@ -92,9 +92,9 @@
         </span>
 
         <button @click="toggleDropdown" class="focus:outline-none" ref="profileButton">
-          <img :src="getFileUrl(auth.currentUser.profile_pic_url) || 'https://avatar.iran.liara.run/public/38'" alt="User Avatar"
+          <img :src="getFileUrl(auth.currentUser.profile_pic_url) || defaultAvatar" alt="User Avatar"
             class="h-10 w-10 object-cover rounded-full border-2 border-indigo-500 cursor-pointer hover:shadow-lg transition"
-            onerror="this.onerror=null; this.src='https://avatar.iran.liara.run/public/38'" />
+            onerror="this.onerror=null; this.src=defaultAvatar" />
         </button>
 
         <div v-if="isDropdownOpen"
@@ -139,6 +139,8 @@ import router from "@/router";
 
 const auth = useAuthStore();
 const route = useRoute();
+
+const defaultAvatar = "/images/default_avatar.jpg";
 
 
 const isDropdownOpen = ref(false);

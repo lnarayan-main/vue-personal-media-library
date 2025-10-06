@@ -24,8 +24,8 @@
                         :src="getAssetUrl(item, type)"
                         alt="Asset thumbnail/profile"
                         :class="{ 
-                            'w-10 h-10 rounded-full': type === 'users',
-                            'w-15 h-10 rounded-lg': type === 'media' 
+                            'w-10 h-10 rounded-full object-cover': type === 'users',
+                            'w-10 h-10 rounded-lg object-cover': type === 'media' 
                         }"
                         class="object-cover shadow-sm bg-gray-200"
                         onerror="this.onerror=null; this.src='https://placehold.co/32x32/d1d5db/4b5563?text=N/A';"

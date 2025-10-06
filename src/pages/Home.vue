@@ -1,7 +1,6 @@
 <template>
   <div class="space-y-12">
     <!-- Hero Section -->
-
     <section class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white rounded-2xl shadow-lg p-10 text-center">
       <h1 class="text-4xl md:text-5xl font-bold mb-4">
         Welcome to <span class="text-yellow-300">MediaHub</span>
@@ -10,19 +9,11 @@
         Upload, explore, and share your favorite images, videos, and audio
         files — all in one place.
       </p>
-      <!-- <router-link
-        to="/media"
-        class="px-6 py-3 bg-yellow-400 text-gray-900 rounded-lg shadow-md font-semibold hover:bg-yellow-300 transition"
-      >
-        Explore Media
-      </router-link> -->
     </section>
 
-    <!-- Featured Media Section -->
     <section>
       <h2 class="text-2xl font-bold mb-6">Featured Media</h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Example Media Cards -->
         <MediaCard
           v-for="item in mediaItems"
           :key="item.id"

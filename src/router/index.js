@@ -18,24 +18,28 @@ import ResetPassword from "../pages/ResetPassword.vue";
 import MediaManagement from "@/pages/MediaManagement.vue";
 import UserView from "@/pages/UserView.vue";
 import MediaView from "@/pages/MediaView.vue";
+import NotFound from "@/pages/NotFound.vue";
 
 const routes = [
   { path: "/", name: "Home", component: Home, meta: { requiresAuth: false } },
-  { path: "/dashboard", name: "Dashboard", component: Dashboard },
-  { path: "/media", name: "MediaList", component: MediaList },
-  { path: "/media/detail/:id", name: "MediaDetail", component: MediaDetail, props: true, meta: { requiresAuth: false } },
-  { path: "/categories", name: "Categories", component: Categories },
   { path: "/login", name: "Login", component: Login },
   { path: "/register", name: "Register", component: Register},
-  { path: "/profile", name: "Profile", component: Profile},
-  { path: "/media/create", name: "MediaCreate", component: MediaCreate},
-  { path: "/media/update/:id", name: "MediaEdit", component: MediaEdit, props: true},
-  { path: "/users-list", name: "UsersList", component: UsersList},
-  { path: '/users/:id', name: 'UserView', component: UserView, props: true },
-  { path: "/media-list", name: "MediaManagement", component: MediaManagement},
-  { path: '/media/view/:id', name: 'MediaView', component: MediaView, props: true },
   { path: "/forgot-password", name: "ForgotPassword", component: ForgotPassword},
   { path: "/reset-password/:token", name: "ResetPassword", component: ResetPassword, props: true},
+  { path: "/dashboard", name: "Dashboard", component: Dashboard, meta: {requiresAuth: true} },
+  { path: "/media", name: "MediaList", component: MediaList, meta: {requiresAuth: true} },
+  { path: "/media/detail/:id", name: "MediaDetail", component: MediaDetail, props: true, meta: { requiresAuth: false } },
+  { path: "/categories", name: "Categories", component: Categories, meta: {requiresAuth: true} },
+  { path: "/profile", name: "Profile", component: Profile, meta: {requiresAuth: true}},
+  { path: "/media/create", name: "MediaCreate", component: MediaCreate, meta: {requiresAuth: true}},
+  { path: "/media/update/:id", name: "MediaEdit", component: MediaEdit, props: true, meta: {requiresAuth: true}},
+  { path: "/users-list", name: "UsersList", component: UsersList, meta: {requiresAuth: true}},
+  { path: '/users/:id', name: 'UserView', component: UserView, props: true, meta: {requiresAuth: true} },
+  { path: "/media-list", name: "MediaManagement", component: MediaManagement, meta: {requiresAuth: true} },
+  { path: '/media/view/:id', name: 'MediaView', component: MediaView, props: true, meta: {requiresAuth: true} },
+
+  // Page Not found path 
+  { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound, },
 ];
 
 const router = createRouter({
@@ -47,8 +51,12 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   const auth = useAuthStore();
 
+  if (!auth.isLoggedIn) {
+    await auth.initAuth(); // reload from localStorage or validate token
+  }
+
   if (to.meta.requiresAuth && !auth.isLoggedIn) {
-    return next("/login"); // redirect guest to login
+    return next("/login");
   }
 
   next();

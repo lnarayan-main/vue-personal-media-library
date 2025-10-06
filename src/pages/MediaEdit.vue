@@ -1,61 +1,44 @@
 <template>
   <main class="flex-1 p-6 bg-gray-50">
     <div class="bg-white rounded-xl shadow-md p-6 max-w-3xl mx-auto">
-        <div class="flex items-center justify-between mt-3">
-           <h1 class="text-2xl font-bold mb-4">Edit Media</h1>
-            <button
-            @click="goBack('/media')"
-            class="px-5 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-700 disabled:opacity-60"
-          >
-            Back
-          </button>
+      <div class="flex items-center justify-between mt-3">
+        <h1 class="text-2xl font-bold mb-4">Edit Media</h1>
+        <button @click="goBack('/media')"
+          class="px-5 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-700 disabled:opacity-60">
+          Back
+        </button>
       </div>
 
       <form @submit.prevent="submitForm" class="space-y-6">
         <!-- Title -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
-          <input
-            v-model="form.title"
-            type="text"
-            required
-            placeholder="Enter media title"
-            class="block w-full px-4 py-2 border rounded-md border-gray-300 focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500"
-          />
+          <input v-model="form.title" type="text" required placeholder="Enter media title"
+            class="block w-full px-4 py-2 border rounded-md border-gray-300 focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500" />
         </div>
 
         <!-- Description -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
-          <textarea
-            v-model="form.description"
-            rows="3"
-            placeholder="Optional description"
-            class="block w-full px-4 py-2 border rounded-md border-gray-300 focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500"
-          ></textarea>
+          <textarea v-model="form.description" rows="3" placeholder="Optional description"
+            class="block w-full px-4 py-2 border rounded-md border-gray-300 focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500"></textarea>
         </div>
 
         <!-- Media Type -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Media Type</label>
-          <select
-            v-model="form.media_type"
-            required
-            class="block w-full px-4 py-2 border rounded-md border-gray-300 focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500"
-          >
-            <option value="image">Image</option>
-            <option value="video">Video</option>
+          <select v-model="form.media_type" required
+            class="block w-full px-4 py-2 border rounded-md border-gray-300 focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500">
             <option value="audio">Audio</option>
+            <option value="video">Video</option>
           </select>
         </div>
 
         <!-- Category -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
-          <select
-            v-model="form.category_id"
-            class="block w-full px-4 py-2 border rounded-md border-gray-300 focus:ring-2 focus:ring-indigo-500"
-          >
+          <select v-model="form.category_id"
+            class="block w-full px-4 py-2 border rounded-md border-gray-300 focus:ring-2 focus:ring-indigo-500">
             <option disabled value="">Select category</option>
             <option v-for="cat in categories" :key="cat.id" :value="cat.id">
               {{ cat.name }}
@@ -67,23 +50,10 @@
         <div v-if="mediaPreview" class="mb-4">
           <p class="text-sm text-gray-600 mb-2">Current Media Preview:</p>
           <div class="rounded-md overflow-hidden bg-black flex justify-center">
-            <video
-              v-if="form.media_type === 'video'"
-              :src="mediaPreview"
-              controls
-              class="max-h-64 w-full object-contain"
-            />
-            <audio
-              v-else-if="form.media_type === 'audio'"
-              :src="mediaPreview"
-              controls
-              class="w-full max-w-sm"
-            />
-            <img
-              v-else-if="form.media_type === 'image'"
-              :src="mediaPreview"
-              class="max-h-64 w-full object-contain"
-            />
+            <video v-if="form.media_type === 'video'" :src="mediaPreview" controls
+              class="max-h-64 w-full object-contain" />
+            <audio v-else-if="form.media_type === 'audio'" :src="mediaPreview" controls class="w-full max-w-sm" />
+            <img v-else-if="form.media_type === 'image'" :src="mediaPreview" class="max-h-64 w-full object-contain" />
           </div>
         </div>
 
@@ -109,10 +79,8 @@
         <!-- Status -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-          <select
-            v-model="form.status"
-            class="block w-full px-4 py-2 border rounded-md border-gray-300 focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500"
-          >
+          <select v-model="form.status"
+            class="block w-full px-4 py-2 border rounded-md border-gray-300 focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500">
             <option value="ACTIVE">Active</option>
             <option value="INACTIVE">Inactive</option>
           </select>
@@ -125,11 +93,8 @@
 
         <!-- Buttons -->
         <div class="flex gap-4">
-          <button
-            type="submit"
-            :disabled="saving"
-            class="px-5 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-60"
-          >
+          <button type="submit" :disabled="saving"
+            class="px-5 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:opacity-60">
             <span v-if="saving">Updating...</span>
             <span v-else>Update</span>
           </button>
@@ -168,8 +133,6 @@ const message = ref({ text: "", type: "" });
 
 function getMediaAcceptType() {
   switch (form.value.media_type) {
-    case "image":
-      return "image/*";
     case "video":
       return "video/*";
     case "audio":
@@ -237,10 +200,10 @@ async function submitForm() {
     if (selectedFile.value) fd.append("file", selectedFile.value);
     if (selectedThumbnail.value) fd.append("thumbnail", selectedThumbnail.value);
 
-    const res = await axiosApi.put(`media/update/${route.params.id}`, fd, { 
-        headers: {
-            "Content-Type": "multipart/form-data", 
-        },
+    const res = await axiosApi.put(`media/update/${route.params.id}`, fd, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     });
 
     message.value = { text: "Media updated successfully!", type: "success" };

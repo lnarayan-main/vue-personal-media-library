@@ -24,8 +24,8 @@ import { useAuthStore } from "./stores/auth";
 
 const auth = useAuthStore();
 
-onMounted(() => {
-  auth.initAuth(); // ✅ checks token validity on refresh
-});
+// onMounted(() => {
+//   auth.initAuth(); // ✅ checks token validity on refresh
+// });
 
 </script>

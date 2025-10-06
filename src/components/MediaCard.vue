@@ -22,12 +22,12 @@
           <AudioPlayCard v-else-if="media.media_type === 'audio'" :thumbnail_url="media.thumbnail_url" :file_url="media.file_url" />
         </div>
     <div class="p-4">
-      <h3 class="text-lg font-semibold mb-2">{{ title }}</h3>
+      <h3 class="text-lg font-semibold mb-2 line-clamp-2">{{ title }}</h3>
       <p class="text-gray-600 text-sm line-clamp-2 mb-3">
         {{ description }}
       </p>
-      <div class="flex items-center justify-between mt-3">
-        <span class="inline-block px-3 py-1 text-xs font-medium rounded-full" :class="{
+      <!-- <div class="flex items-center justify-between mt-3">
+        <span class="inline-block px-3 py-1 text-xs font-medium rounded-full capitalize" :class="{
           'bg-blue-100 text-blue-800': type === 'image',
           'bg-green-100 text-green-800': type === 'audio',
           'bg-red-100 text-red-800': type === 'video',
@@ -37,7 +37,8 @@
         <router-link :to="`/media/detail/${media_id}`" class="mt-2 text-blue-600 hover:underline">
           View Details
         </router-link>
-      </div>
+      </div> -->
+      <ActionMenu :type="type" :media_id="media_id" />
     </div>
   </div>
 </template>
@@ -45,6 +46,7 @@
 <script setup>
 import { getFileUrl } from '@/utils/helpers';
 import AudioPlayCard from './AudioPlayCard.vue';
+import ActionMenu from './ActionMenu.vue';
 
 const BASE_URL = import.meta.env.VITE_API_URL;
 

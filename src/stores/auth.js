@@ -50,8 +50,6 @@ export const useAuthStore = defineStore('auth', {
           },
         )
 
-        console.log("####### RES: ", res);
-
         const token = res.data.access_token
 
         if (credentials.rememberMe) {
@@ -74,6 +72,7 @@ export const useAuthStore = defineStore('auth', {
     logout() {
       localStorage.removeItem('token')
       sessionStorage.removeItem('token')
+      localStorage.removeItem("remember_me")
       this.token = null
       this.currentUser = null
     },

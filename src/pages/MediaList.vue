@@ -26,42 +26,24 @@
 
     <!-- Media Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      <div v-for="media in filteredMedia" :key="media.id" class="bg-white shadow rounded-lg overflow-hidden">
-        <!-- Media Preview -->
-        <div class="h-48 bg-gray-200 flex items-center justify-center">
-          <template v-if="media.media_type === 'image'">
-            <img :src="`${BASE_URL}${media.file_url}`" alt="" class="h-full w-full object-cover" />
-          </template>
-          <template v-else-if="media.media_type === 'video'">
-            <video :src="getFileUrl(media.file_url)" :poster="getFileUrl(media.thumbnail_url)" controls
-              class="h-full w-full object-cover" muted></video>
-          </template>
-          <template v-else-if="media.media_type === 'audio'">
-            <div class="w-full h-full flex flex-col justify-end" :style="{
-              backgroundImage: `url(${getFileUrl(media.thumbnail_url)})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              backgroundColor: '#333'
-            }">
-              <audio :src="`${BASE_URL}${media.file_url}`" controls class="w-full"></audio>
-            </div>
-          </template>
-        </div>
+      <MediaCard
+          v-for="item in filteredMedia"
+          :key="item.id"
+          :media_id="item.id"
+          :title="item.title"
+          :description="item.description"
+          :thumbnail="item.media_type === 'image' ? item.file_url : item.thumbnail_url"
+          :file_url="item.file_url"
+          :type="item.media_type"
+          :media="item"
+        />
 
-        <!-- Media Info -->
-        <div class="p-4 flex flex-col gap-2">
-          <h2 class="font-semibold text-lg truncate">{{ media.title }}</h2>
-          <p class="text-sm text-gray-600 truncate">{{ media.description }}</p>
-          <router-link :to="`/media/detail/${media.id}`" class="mt-2 text-blue-600 hover:underline">
-            View Details
-          </router-link>
-        </div>
-      </div>
     </div>
   </div>
 </template>
 
 <script setup>
+import MediaCard from "@/components/MediaCard.vue";
 import { useAuthStore } from "@/stores/auth";
 import axiosApi from "@/utils/axiosApi";
 import { getFileUrl } from "@/utils/helpers";

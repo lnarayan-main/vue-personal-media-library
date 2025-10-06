@@ -120,9 +120,9 @@ const defaultAvatar = "/images/default_avatar.jpg";
 // reactive state
 const profile = ref({
   id: null,
-  name: "Rakesh Kumar",
-  email: "rakesh.kumar@yopmail.com",
-  about: "Full Stack Developer passionate about Vue & FastAPI.",
+  name: "",
+  email: "",
+  about: "",
   profile_pic_url: ""
 });
 

@@ -205,7 +205,7 @@ onMounted(fetchMedia);
 
                         <!-- Name -->
                         <td class="px-4 py-3 text-sm font-medium text-gray-800"><img
-                                :src="getFileUrl(media.thumbnail_url)" class="rounded-md" alt="Profile Pic"></td>
+                                :src="getFileUrl(media.thumbnail_url)" class="w-15 h-15 object-cover" alt="Thumbnail"></td>
                         <td class="px-4 py-3 text-sm font-medium text-gray-800">{{ media.title }}</td>
 
                         <!-- Email -->

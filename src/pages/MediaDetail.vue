@@ -46,8 +46,7 @@
           </div>
         </div>
 
-        <!-- Actions (for later: edit/delete if owner) -->
-        <div class="mt-6 flex gap-4">
+        <!-- <div class="mt-6 flex gap-4">
           <router-link :to="`/media/update/${media.id}`">
             <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
               Edit
@@ -56,7 +55,7 @@
           <button class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
             Delete
           </button>
-        </div>
+        </div> -->
       </div>
     </div>
 

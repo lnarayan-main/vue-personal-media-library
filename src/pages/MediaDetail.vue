@@ -19,15 +19,11 @@
             :poster="getFileUrl(media.thumbnail_url)" controls class="w-full h-full object-cover">
             Your browser does not support the video tag.
           </video>
-          <div v-else-if="media.media_type === 'audio'" class="w-full h-full flex flex-col justify-end p-4"
+          <!-- <div v-else-if="media.media_type === 'audio'" class="w-full h-full flex flex-col justify-end p-4"
             :style="{ backgroundImage: `url(${getFileUrl(media.thumbnail_url)})`, backgroundSize: 'cover', backgroundPosition: 'center' }">
-            <!-- Title and overlay text if desired -->
-            <div class="bg-black/50 p-3 rounded-t-lg">
-              <p class="text-white font-semibold">{{ media.title || 'Audio File' }}</p>
-            </div>
-            <!-- Audio controls placed at the bottom -->
-            <audio :src="getFileUrl(media.file_url)" controls class="w-full bg-white rounded-b-lg shadow-xl"></audio>
-          </div>
+            <audio :src="getFileUrl(media.file_url)" controls class="w-full bg-white rounded-b-lg shadow-xl opacity-90"></audio>
+          </div> -->
+          <AudioPlayCard v-else-if="media.media_type === 'audio'" :thumbnail_url="media.thumbnail_url" :file_url="media.file_url" />
           <div v-else class="text-gray-500">Unsupported media type</div>
         </div>
       </div>
@@ -77,6 +73,7 @@ import { useRoute } from "vue-router";
 import { getFileUrl } from "@/utils/helpers";
 import router from "@/router";
 import axiosApi from "@/utils/axiosApi";
+import AudioPlayCard from "@/components/AudioPlayCard.vue";
 
 const route = useRoute();
 const media = ref(null);
@@ -111,3 +108,5 @@ onMounted(() => {
 });
 
 </script>
+
+

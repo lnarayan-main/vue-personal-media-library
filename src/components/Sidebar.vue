@@ -21,9 +21,9 @@
       <FilmIcon class="h-5 w-5 mr-2" />
         My Media
       </router-link>
-      <router-link v-if="auth.isAdmin" to="/users" :class="[
+      <router-link v-if="auth.isAdmin" to="/users-list" :class="[
         'flex text-gray-700 hover:text-indigo-600 font-medium',
-        route.path.startsWith('/users')
+        route.path.startsWith('/users-list')
           ? 'text-indigo-600'
           : 'text-gray-700'
       ]">

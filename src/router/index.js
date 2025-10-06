@@ -17,6 +17,7 @@ import ForgotPassword from "../pages/ForgotPassword.vue";
 import ResetPassword from "../pages/ResetPassword.vue";
 import MediaManagement from "@/pages/MediaManagement.vue";
 import UserView from "@/pages/UserView.vue";
+import MediaView from "@/pages/MediaView.vue";
 
 const routes = [
   { path: "/", name: "Home", component: Home, meta: { requiresAuth: false } },
@@ -29,9 +30,10 @@ const routes = [
   { path: "/profile", name: "Profile", component: Profile},
   { path: "/media/create", name: "MediaCreate", component: MediaCreate},
   { path: "/media/update/:id", name: "MediaEdit", component: MediaEdit, props: true},
-  { path: "/users", name: "UsersList", component: UsersList},
+  { path: "/users-list", name: "UsersList", component: UsersList},
   { path: '/users/:id', name: 'UserView', component: UserView, props: true },
   { path: "/media-list", name: "MediaManagement", component: MediaManagement},
+  { path: '/media/view/:id', name: 'MediaView', component: MediaView, props: true },
   { path: "/forgot-password", name: "ForgotPassword", component: ForgotPassword},
   { path: "/reset-password/:token", name: "ResetPassword", component: ResetPassword, props: true},
 ];

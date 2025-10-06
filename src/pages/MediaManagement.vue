@@ -6,12 +6,19 @@ import axiosApi from '@/utils/axiosApi';
 import { PencilIcon, TrashIcon, ArrowPathIcon, EyeIcon } from '@heroicons/vue/20/solid';
 import { getFileUrl, getStatusColor } from '@/utils/helpers';
 import { UserIcon } from '@heroicons/vue/20/solid';
+import notify from '@/utils/notify';
+import DeleteConfirmModal from '@/components/DeleteConfirmModal.vue';
+import router from '@/router';
+
 
 const items = ref([]);
 const loading = ref(true);
 const error = ref(null);
 const searchTerm = ref("");
 const appliedSearch = ref("");
+
+const showDeleteModal = ref(false);
+const mediaToDelete = ref(null);
 
 const pagination = reactive({
     page: 1,
@@ -21,6 +28,10 @@ const pagination = reactive({
     totalPages: null,
 });
 
+function handleView(mediaId) {
+    router.push({ name: 'MediaView', params: { id: mediaId } });
+}
+
 // Corrected to use console.log() instead of alert() to avoid compilation issues
 function handleEdit(mediaId) {
     // In a real application, this would use the router:
@@ -28,17 +39,31 @@ function handleEdit(mediaId) {
     console.log(`Editing user ID: ${mediaId}`);
 }
 
-// Corrected to use console.log() instead of confirm() and alert()
-async function handleDelete(mediaId) {
-    // In a real application, a custom modal would confirm the action here.
-    console.log(`Preparing to delete user ID: ${mediaId}`);
+function handleDelete(mediaId) {
+    mediaToDelete.value = mediaId;
+    showDeleteModal.value = true;
+}
 
-    // Simulate successful delete after confirmation
-    // await api.delete(`/users/${userId}`); 
+async function confirmDelete() {
+    if (mediaToDelete.value) {
+        try {
+            const res = await axiosApi.delete(`admin-media/delete/${mediaToDelete.value}`);
+            notify.success(res.data.detail || "Media deleted successfully!");
+            fetchMedia();
+        } catch (error) {
+            const errMsg = error.response?.data?.detail || "Failed to delete media.";
+            notify.error(errMsg);
+            console.error("Delete error:", errMsg);
+        } finally {
+            showDeleteModal.value = false;
+            mediaToDelete.value = null;
+        }
+    }
+}
 
-    // After successful delete, refresh the list or remove the user locally
-    media.value = media.value.filter(media => media.id !== mediaId);
-    console.log(`User ID ${mediaId} deleted from local list.`);
+function cancelDelete() {
+    showDeleteModal.value = false;
+    mediaToDelete.value = null;
 }
 
 async function fetchMedia() {
@@ -47,7 +72,7 @@ async function fetchMedia() {
     try {
         let queryString = `media-management?page=${pagination.page}&size=${pagination.size}`;
 
-        if(appliedSearch.value){
+        if (appliedSearch.value) {
             queryString += `&search=${encodeURIComponent(appliedSearch.value)}`;
         }
 
@@ -69,7 +94,7 @@ async function fetchMedia() {
     }
 }
 
-function applySearch(){
+function applySearch() {
     appliedSearch.value = searchTerm.value;
     pagination.page = 1;
     fetchMedia();
@@ -93,9 +118,12 @@ async function onChangeStatus(e) {
         }
 
         const res = await axiosApi.post('media/change-status', payload);
-        alert(res.data?.detail);
+        // alert(res.data?.detail);
+        const successMsg = res.data?.detail || "Stauts changed successfully.";
+        notify.success(successMsg);
     } catch (err) {
-        error.value = err.response?.data?.detail || "Failed to change status of media."
+        const errMsg = err.response?.data?.detail || "Failed to change status of media."
+        notify.error(errMsg);
     } finally {
         loading.value = false;
     }
@@ -171,8 +199,7 @@ onMounted(fetchMedia);
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
-                    <tr v-for="(media, i) in items" :key="i"
-                        class="hover:bg-indigo-50/50 transition duration-100">
+                    <tr v-for="(media, i) in items" :key="i" class="hover:bg-indigo-50/50 transition duration-100">
                         <!-- S.N. -->
                         <td class="px-4 py-3 text-sm text-gray-700">{{ i + 1 }}</td>
 
@@ -196,7 +223,7 @@ onMounted(fetchMedia);
                         <td class="px-4 py-3 text-sm">
                             <div class="flex space-x-2">
                                 <!-- View Button  -->
-                                <button
+                                <button @click="handleView(media.id)" title="View Media"
                                     class="p-2 rounded-full text-indigo-600 hover:bg-indigo-100 transition duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                     <EyeIcon class="h-5 w-5" />
                                 </button>
@@ -279,6 +306,9 @@ onMounted(fetchMedia);
                 </div>
             </div>
         </div>
+        <!-- Delete Confirmation Modal -->
+        <DeleteConfirmModal :show="showDeleteModal" :userId="mediaToDelete" @cancel="cancelDelete"
+            @confirm="confirmDelete" />
     </div>
 </template>
 

@@ -1,5 +1,11 @@
 <template>
-  <div class="p-6 max-w-3xl mx-auto">
+  <div class="p-6 max-w-5xl mx-auto mt-8 px-4">
+    <div class="flex items-center justify-between mt-3">
+      <button @click="goBack('/users-list')"
+        class="inline-block mb-6 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
+        ￩ Back to Users List
+      </button>
+    </div>
     <!-- Loading -->
     <div v-if="loading" class="text-gray-500 text-center">Loading user details...</div>
 
@@ -9,19 +15,14 @@
     <!-- User Details -->
     <div v-else-if="user" class="bg-white shadow-lg rounded-2xl p-6 space-y-6">
       <div class="flex items-center space-x-6">
-        <img
-          :src="getFileUrl(user.profile_pic_url) || defaultAvatar"
-          alt="Profile Picture"
-          class="w-28 h-28 object-cover rounded-full border"
-        />
+        <img :src="getFileUrl(user.profile_pic_url) || defaultAvatar" alt="Profile Picture"
+          class="w-28 h-28 object-cover rounded-full border" />
         <div>
           <h2 class="text-2xl font-bold text-gray-800">{{ user.name }}</h2>
           <p class="text-gray-500">{{ user.email }}</p>
           <p class="mt-1">
-            <span
-              :class="user.status === 'active' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'"
-              class="px-2 py-1 text-sm rounded-full, capitalize"
-            >
+            <span :class="user.status === 'active' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'"
+              class="px-2 py-1 text-sm rounded-full, capitalize">
               {{ user.status }}
             </span>
           </p>
@@ -36,14 +37,11 @@
         <p v-else class="text-gray-400 italic">No about information provided.</p>
       </div>
 
-      <div class="text-center">
-        <button
-          @click="goBack"
-          class="mt-6 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-        >
+      <!-- <div class="text-center">
+        <button @click="goBack" class="mt-6 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
           ← Back to Users
         </button>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -51,7 +49,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { getFileUrl } from '@/utils/helpers'
+import { getFileUrl, goBack } from '@/utils/helpers'
 import axiosApi from '@/utils/axiosApi'
 
 const route = useRoute()
@@ -72,9 +70,9 @@ async function fetchUserDetails() {
   }
 }
 
-function goBack() {
-  router.push({ name: 'UsersList' })
-}
+// function goBack() {
+//   router.push({ name: 'UsersList' })
+// }
 
 onMounted(fetchUserDetails)
 </script>

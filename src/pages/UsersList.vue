@@ -9,6 +9,7 @@ import { UserIcon } from '@heroicons/vue/20/solid';
 import router from '@/router';
 import DeleteConfirmModal from '@/components/DeleteConfirmModal.vue';
 import { toast } from '@/main';
+import notify from "@/utils/notify";
 
 // --- State Management ---
 const users = ref([]);
@@ -49,7 +50,7 @@ function handleDelete(userId) {
 async function confirmDelete() {
     if (userToDelete.value) {
         try {
-            const res = await axiosApi.get(`user/delete/${userToDelete.value}`);
+            const res = await axiosApi.delete(`user/delete/${userToDelete.value}`);
             toast.success(res.data.detail || "User deleted successfully!");
             fetchUsers();
         } catch (error) {
@@ -122,9 +123,12 @@ async function onChangeStatus(e) {
         }
 
         const res = await axiosApi.post('user/change-status', payload);
-        alert(res.data?.detail);
+        notify.success(res.data?.detail);
+        // alert(res.data?.detail);
     } catch (err) {
-        error.value = err.response?.data?.detail || "Failed to change status of user."
+        // error.value = err.response?.data?.detail || "Failed to change status of user."
+        const errMsg = err.response?.data?.detail || "Failed to change status of user."
+        notify.error(errMsg);
     } finally {
         loading.value = false;
     }

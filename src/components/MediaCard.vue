@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden">
+  <div class="bg-white rounded-xl shadow hover:shadow-lg  overflow-hidden transition-transform duration-300 hover:scale-101">
     <!-- <img :src="getFileUrl(thumbnail)" alt="Media thumbnail" class="w-full h-48 object-cover" /> -->
      <div class="h-48 bg-gray-200 flex items-center justify-center">
           <template v-if="media.media_type === 'image'">
@@ -9,7 +9,7 @@
             <video :src="getFileUrl(media.file_url)" :poster="getFileUrl(media.thumbnail_url)" controls
               class="h-full w-full object-cover" muted></video>
           </template>
-          <template v-else-if="media.media_type === 'audio'">
+          <!-- <template v-else-if="media.media_type === 'audio'">
             <div class="w-full h-full flex flex-col justify-end" :style="{
               backgroundImage: `url(${getFileUrl(media.thumbnail_url)})`,
               backgroundSize: 'cover',
@@ -18,7 +18,8 @@
             }">
               <audio :src="`${BASE_URL}${media.file_url}`" controls class="w-full"></audio>
             </div>
-          </template>
+          </template> -->
+          <AudioPlayCard v-else-if="media.media_type === 'audio'" :thumbnail_url="media.thumbnail_url" :file_url="media.file_url" />
         </div>
     <div class="p-4">
       <h3 class="text-lg font-semibold mb-2">{{ title }}</h3>
@@ -43,6 +44,7 @@
 
 <script setup>
 import { getFileUrl } from '@/utils/helpers';
+import AudioPlayCard from './AudioPlayCard.vue';
 
 const BASE_URL = import.meta.env.VITE_API_URL;
 

@@ -316,8 +316,8 @@ onMounted(fetchUsers);
             </div>
         </div>
         <!-- Delete Confirmation Modal -->
-        <DeleteConfirmModal :show="showDeleteModal" :userId="userToDelete" @cancel="cancelDelete"
-            @confirm="confirmDelete" />
+        <DeleteConfirmModal :show="showDeleteModal" :recordId="userToDelete" @cancel="cancelDelete"
+            @confirm="confirmDelete" :recordType="'user'" />
 
     </div>
 </template>

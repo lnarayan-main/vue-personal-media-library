@@ -173,6 +173,7 @@ async function fetchMedia() {
     const res = await axiosApi.get(`media/detail/${mediaId}`);
 
     const data = res.data;
+
     form.value = {
       title: data.title,
       description: data.description,

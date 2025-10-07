@@ -307,8 +307,8 @@ onMounted(fetchMedia);
             </div>
         </div>
         <!-- Delete Confirmation Modal -->
-        <DeleteConfirmModal :show="showDeleteModal" :userId="mediaToDelete" @cancel="cancelDelete"
-            @confirm="confirmDelete" />
+        <DeleteConfirmModal :show="showDeleteModal" :recordId="mediaToDelete" @cancel="cancelDelete"
+            @confirm="confirmDelete" :recordType="'media'" />
     </div>
 </template>
 

@@ -1,4 +1,3 @@
-<!-- src/components/DeleteConfirmModal.vue -->
 <template>
   <div
     v-if="show"
@@ -9,8 +8,8 @@
         Confirm Delete
       </h2>
       <p class="text-gray-600 dark:text-black mb-6">
-        Are you sure you want to delete user
-        <span class="font-bold text-red-600">#{{ userId }}</span>?  
+        Are you sure you want to delete {{  recordType }}
+        <span class="font-bold text-red-600">#{{ recordId }} </span> ?
         This action cannot be undone.
       </p>
 
@@ -22,7 +21,7 @@
           Cancel
         </button>
         <button
-          @click="$emit('confirm', userId)"
+          @click="$emit('confirm', recordId)"
           class="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-800"
         >
           Yes, Delete
@@ -35,7 +34,8 @@
 <script setup>
 defineProps({
   show: Boolean,
-  userId: [String, Number],
+  recordId: [String, Number],
+  recordType: String,
 })
 defineEmits(['cancel', 'confirm'])
 </script>

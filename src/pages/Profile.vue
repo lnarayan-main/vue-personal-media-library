@@ -107,7 +107,6 @@
 
 <script setup>
 import { ref, onMounted, computed } from "vue";
-import axios from "axios";
 import { getFileUrl } from "@/utils/helpers";
 import axiosApi from "@/utils/axiosApi";
 

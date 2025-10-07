@@ -10,7 +10,8 @@
 
       <!-- Main content -->
       <main class="flex-1 p-6">
-        <router-view />
+        <!-- <router-view /> -->
+         <router-view :key="$route.fullPath" />
       </main>
     </div>
   </div>
@@ -19,7 +20,6 @@
 <script setup>
 import Navbar from "./components/Navbar.vue";
 import Sidebar from "./components/Sidebar.vue";
-import { onMounted } from "vue";
 import { useAuthStore } from "./stores/auth";
 
 const auth = useAuthStore();

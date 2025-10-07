@@ -75,8 +75,8 @@
 
 <script setup>
 import { ref } from "vue";
-import axios from "axios";
 import { useRouter } from "vue-router";
+import axiosApi from "@/utils/axiosApi";
 
 const BASE_URL = import.meta.env.VITE_API_URL;
 
@@ -107,9 +107,7 @@ const registerUser = async () => {
     //   formData.append("profile_pic", form.value.profile_pic);
     // }
 
-    const response = await axios.post(BASE_URL + "user/register", formData, {
-      headers: { "Content-Type": "application/json" },
-    });
+    const response = await axiosApi.post("user/register", formData);
 
     console.log(response.data);
     alert("Registration successful!");

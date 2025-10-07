@@ -1,7 +1,8 @@
+<!-- src/pages/MediaList.vue -->
 <template>
-  <div class="space-y-12">
+  <div class="p-6 bg-gray-100 min-h-screen">
     <!-- Hero Section -->
-    <section class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white rounded-2xl shadow-lg p-10 text-center">
+    <section class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white rounded-2xl shadow-lg p-10 text-center mb-5">
       <h1 class="text-4xl md:text-5xl font-bold mb-4">
         Welcome to <span class="text-yellow-300">MediaHub</span>
       </h1>
@@ -10,12 +11,30 @@
         files — all in one place.
       </p>
     </section>
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl font-bold">Media Library</h1>
+    </div>
 
-    <section>
-      <h2 class="text-2xl font-bold mb-6">Featured Media</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <MediaCard
-          v-for="item in mediaItems"
+    <!-- Category Filter -->
+    <div class="mb-4 flex gap-2 overflow-x-auto">
+      <button v-for="cat in categories" :key="cat.id" @click="selectedCategory = cat.id" :class="[
+        'px-4 py-2 rounded-lg text-white',
+        selectedCategory === cat.id ? 'bg-blue-600' : 'bg-gray-500 hover:bg-gray-600'
+      ]">
+        {{ cat.name }}
+      </button>
+      <button @click="selectedCategory = null" :class="[
+        'px-4 py-2 rounded-lg text-white',
+        selectedCategory === null ? 'bg-blue-600' : 'bg-gray-500 hover:bg-gray-600'
+      ]">
+        All
+      </button>
+    </div>
+
+    <!-- Media Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <MediaCard
+          v-for="item in filteredMedia"
           :key="item.id"
           :media_id="item.id"
           :title="item.title"
@@ -24,18 +43,23 @@
           :file_url="item.file_url"
           :type="item.media_type"
           :media="item"
+          @delete-media="openDeleteModal"
         />
-      </div>
-    </section>
+
+    </div>
   </div>
+  <DeleteConfirmModal :show="showDeleteModal" :recordId="mediaToDelete" @cancel="cancelDelete"
+            @confirm="confirmDelete" :recordType="'media'" />
 </template>
 
 <script setup>
+import DeleteConfirmModal from "@/components/DeleteConfirmModal.vue";
+import MediaCard from "@/components/MediaCard.vue";
+import { useAuthStore } from "@/stores/auth";
 import axiosApi from "@/utils/axiosApi";
-import MediaCard from "../components/MediaCard.vue";
-
-import { getFileUrl } from "@/utils/helpers";
+import notify from "@/utils/notify";
 import { ref, onMounted, computed } from "vue";
+const auth = useAuthStore();
 
 // Media and Categories state
 const mediaItems = ref([]);
@@ -43,8 +67,35 @@ const categories = ref([]);
 const selectedCategory = ref(null);
 const BASE_URL = import.meta.env.VITE_API_URL;
 
-// Get token from localStorage
-const token = localStorage.getItem("token");
+const showDeleteModal = ref(false)
+const mediaToDelete = ref(null)
+
+const openDeleteModal = (id) => {
+  mediaToDelete.value = id
+  showDeleteModal.value = true
+}
+
+const cancelDelete = () => {
+  showDeleteModal.value = false
+  mediaToDelete.value = null
+}
+
+async function confirmDelete() {
+    if (mediaToDelete.value) {
+        try {
+            const res = await axiosApi.delete(`media/delete/${mediaToDelete.value}`);
+            notify.success(res.data.detail || "Media deleted successfully!");
+            fetchMedia();
+        } catch (error) {
+            const errMsg = error.response?.data?.detail || "Failed to delete media.";
+            notify.error(errMsg);
+            console.error("Delete error:", errMsg);
+        } finally {
+            showDeleteModal.value = false;
+            mediaToDelete.value = null;
+        }
+    }
+}
 
 // Fetch all media items
 async function fetchMedia() {
@@ -60,7 +111,7 @@ async function fetchMedia() {
 async function fetchCategories() {
   try {
     const res = await axiosApi.get("category/list");
-    categories.value = await res.data;
+    categories.value = res.data;
   } catch (err) {
     console.error("Failed to fetch categories", err);
   }

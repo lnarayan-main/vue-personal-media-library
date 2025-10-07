@@ -1,6 +1,16 @@
 <!-- src/pages/MediaList.vue -->
 <template>
   <div class="p-6 bg-gray-100 min-h-screen">
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white rounded-2xl shadow-lg p-10 text-center mb-5">
+      <h1 class="text-4xl md:text-5xl font-bold mb-4">
+        Welcome to <span class="text-yellow-300">MediaHub</span>
+      </h1>
+      <p class="text-lg md:text-xl max-w-2xl mx-auto mb-6">
+        Upload, explore, and share your favorite images, videos, and audio
+        files — all in one place.
+      </p>
+    </section>
     <div class="flex justify-between items-center mb-6">
       <h1 class="text-2xl font-bold">Media Library</h1>
       <router-link v-if="auth.isLoggedIn" to="/media/create" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
@@ -36,17 +46,22 @@
           :file_url="item.file_url"
           :type="item.media_type"
           :media="item"
+          @delete-media="openDeleteModal"
+          :auth_user="auth.currentUser"
         />
 
     </div>
   </div>
+  <DeleteConfirmModal :show="showDeleteModal" :recordId="mediaToDelete" @cancel="cancelDelete"
+            @confirm="confirmDelete" :recordType="'media'" />
 </template>
 
 <script setup>
+import DeleteConfirmModal from "@/components/DeleteConfirmModal.vue";
 import MediaCard from "@/components/MediaCard.vue";
 import { useAuthStore } from "@/stores/auth";
 import axiosApi from "@/utils/axiosApi";
-import { getFileUrl } from "@/utils/helpers";
+import notify from "@/utils/notify";
 import { ref, onMounted, computed } from "vue";
 const auth = useAuthStore();
 
@@ -55,6 +70,36 @@ const mediaItems = ref([]);
 const categories = ref([]);
 const selectedCategory = ref(null);
 const BASE_URL = import.meta.env.VITE_API_URL;
+
+const showDeleteModal = ref(false)
+const mediaToDelete = ref(null)
+
+const openDeleteModal = (id) => {
+  mediaToDelete.value = id
+  showDeleteModal.value = true
+}
+
+const cancelDelete = () => {
+  showDeleteModal.value = false
+  mediaToDelete.value = null
+}
+
+async function confirmDelete() {
+    if (mediaToDelete.value) {
+        try {
+            const res = await axiosApi.delete(`media/delete/${mediaToDelete.value}`);
+            notify.success(res.data.detail || "Media deleted successfully!");
+            fetchMedia();
+        } catch (error) {
+            const errMsg = error.response?.data?.detail || "Failed to delete media.";
+            notify.error(errMsg);
+            console.error("Delete error:", errMsg);
+        } finally {
+            showDeleteModal.value = false;
+            mediaToDelete.value = null;
+        }
+    }
+}
 
 // Fetch all media items
 async function fetchMedia() {

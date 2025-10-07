@@ -12,51 +12,57 @@
         <HomeIcon class="h-5 w-5 mr-2" />
         Dashboard
       </router-link>
+
       <router-link v-if="auth.isUser" to="/media" :class="[
         'flex text-gray-700 hover:text-indigo-600 font-medium',
         route.path.startsWith('/media')
           ? 'text-indigo-600'
           : 'text-gray-700'
       ]">
-      <FilmIcon class="h-5 w-5 mr-2" />
+        <FilmIcon class="h-5 w-5 mr-2" />
         My Media
       </router-link>
+
       <router-link v-if="auth.isAdmin" to="/users-list" :class="[
         'flex text-gray-700 hover:text-indigo-600 font-medium',
         route.path.startsWith('/users-list')
           ? 'text-indigo-600'
           : 'text-gray-700'
       ]">
-      <UsersIcon class="h-5 w-5 mr-2" />
+        <UsersIcon class="h-5 w-5 mr-2" />
         User Management
       </router-link>
+
       <router-link v-if="auth.isAdmin" to="/media-list" :class="[
         'flex text-gray-700 hover:text-indigo-600 font-medium',
         route.path.startsWith('/media-list')
           ? 'text-indigo-600'
           : 'text-gray-700'
       ]">
-      <FilmIcon class="h-5 w-5 mr-2" />
+        <FilmIcon class="h-5 w-5 mr-2" />
         Media Management
       </router-link>
+
       <router-link v-if="auth.isAdmin" to="/categories" :class="[
         'flex text-gray-700 hover:text-indigo-600 font-medium',
         route.path.startsWith('/categories')
           ? 'text-indigo-600'
           : 'text-gray-700'
       ]">
-      <TagIcon class="h-5 w-5 mr-2" />
+        <TagIcon class="h-5 w-5 mr-2" />
         Category Management
       </router-link>
+
       <router-link to="/profile" :class="[
         'flex text-gray-700 hover:text-indigo-600 font-medium',
         route.path.startsWith('/profile')
           ? 'text-indigo-600'
           : 'text-gray-700'
       ]">
-      <UserCircleIcon class="h-5 w-5 mr-2" />
+        <UserCircleIcon class="h-5 w-5 mr-2" />
         Manage Profile
       </router-link>
+
     </nav>
   </aside>
 </template>

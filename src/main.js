@@ -2,7 +2,6 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import { createPinia } from 'pinia'
-import { useAuthStore } from './stores/auth'
 
 import Vue3Toastify, { toast } from 'vue3-toastify'
 import 'vue3-toastify/dist/index.css'
@@ -10,15 +9,21 @@ import 'vue3-toastify/dist/index.css'
 // TailwindCSS
 import './assets/main.css'
 
-const app = createApp(App);
-const pinia = createPinia();
-app.use(pinia);
+const app = createApp(App)
+const pinia = createPinia()
+
+app.use(pinia)
 app.use(router)
 
-const auth = useAuthStore();
-auth.initAuth();
+// Clear token on browser close if user didn't check "remember me"
+window.addEventListener('beforeunload', () => {
+  const isSessionOnly = sessionStorage.getItem('token_session_only') === 'true'
 
-// app.use(createPinia())
+  if (isSessionOnly) {
+    localStorage.removeItem('token')
+    sessionStorage.removeItem('token_session_only')
+  }
+})
 
 app.use(Vue3Toastify, {
   autoClose: 3000,

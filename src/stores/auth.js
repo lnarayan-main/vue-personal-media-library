@@ -1,19 +1,22 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
+
 const BASE_URL = import.meta.env.VITE_API_URL
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    // token: localStorage.getItem('token') || null,
-    token: localStorage.getItem('token') || sessionStorage.getItem('token') || null,
+    token: null,
     currentUser: null,
+    isInitialized: false,
   }),
+  
   getters: {
     isLoggedIn: (state) => !!state.token && !!state.currentUser,
-    role: (state) => state.currentUser?.role || null, // ✅ role getter
+    role: (state) => state.currentUser?.role || null,
     isAdmin: (state) => state.currentUser?.role === 'admin',
     isUser: (state) => state.currentUser?.role === 'user',
   },
+  
   actions: {
     async fetchCurrentUser() {
       if (!this.token) return
@@ -24,18 +27,23 @@ export const useAuthStore = defineStore('auth', {
         })
         this.currentUser = res.data
       } catch (err) {
-        // If token invalid → logout
         console.warn('Token expired or invalid. Logging out.')
         this.logout()
       }
     },
+
     async initAuth() {
-      // call this in App.vue onMounted()
+      if (this.isInitialized) return
+
       this.loadToken()
+      
       if (this.token) {
         await this.fetchCurrentUser()
       }
+      
+      this.isInitialized = true
     },
+
     async login(credentials) {
       try {
         const res = await axios.post(
@@ -52,14 +60,19 @@ export const useAuthStore = defineStore('auth', {
 
         const token = res.data.access_token
 
-        if (credentials.rememberMe) {
-          localStorage.setItem('token', token)
+        // Always use localStorage for cross-tab compatibility
+        localStorage.setItem('token', token)
+        
+        if (!credentials.rememberMe) {
+          // Mark that this token should be cleared when browser closes
+          sessionStorage.setItem('token_session_only', 'true')
         } else {
-          sessionStorage.setItem('token', token)
+          sessionStorage.removeItem('token_session_only')
         }
 
         this.token = token
-        // fetch user immediately
+        
+        // Fetch user immediately after login
         await this.fetchCurrentUser()
 
         return { success: true }
@@ -69,15 +82,20 @@ export const useAuthStore = defineStore('auth', {
         return { success: false, message }
       }
     },
+
     logout() {
       localStorage.removeItem('token')
       sessionStorage.removeItem('token')
+      sessionStorage.removeItem('token_session_only')
       localStorage.removeItem("remember_me")
       this.token = null
       this.currentUser = null
+      this.isInitialized = false
     },
+
     loadToken() {
-      this.token = localStorage.getItem('token') || sessionStorage.getItem('token')
+      // Always load from localStorage (works across tabs)
+      this.token = localStorage.getItem('token')
     },
   },
 })

@@ -9,6 +9,8 @@ import 'vue3-toastify/dist/index.css'
 // TailwindCSS
 import './assets/main.css'
 
+import './assets/nprogress-custom.css'
+
 const app = createApp(App)
 const pinia = createPinia()
 

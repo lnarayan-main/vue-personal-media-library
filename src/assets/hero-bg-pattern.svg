@@ -1,0 +1,50 @@
+<!-- src/assets/hero-bg-pattern.svg -->
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <!-- soft diagonal stripes -->
+    <pattern id="diag-stripes" patternUnits="userSpaceOnUse" width="120" height="120" patternTransform="rotate(22)">
+      <rect width="120" height="120" fill="rgba(255,255,255,0.04)"/>
+      <rect x="0" y="0" width="60" height="120" fill="rgba(255,255,255,0.02)"/>
+    </pattern>
+
+    <!-- subtle blob gradient -->
+    <radialGradient id="blobGrad" cx="30%" cy="20%" r="60%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.05)"/>
+      <stop offset="50%" stop-color="rgba(255,255,255,0.02)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0.00)"/>
+    </radialGradient>
+
+    <!-- tiny dot grid -->
+    <pattern id="dot-grid" width="16" height="16" patternUnits="userSpaceOnUse">
+      <circle cx="1" cy="1" r="0.9" fill="rgba(255,255,255,0.02)"/>
+    </pattern>
+  </defs>
+
+  <!-- base overlay area -->
+  <rect width="1600" height="900" fill="url(#diag-stripes)"/>
+
+  <!-- soft blobs for depth -->
+  <g opacity="0.35" transform="translate(100,40)">
+    <ellipse cx="260" cy="120" rx="420" ry="200" fill="url(#blobGrad)" />
+  </g>
+  <g opacity="0.28" transform="translate(900,220)">
+    <ellipse cx="260" cy="120" rx="360" ry="180" fill="url(#blobGrad)" />
+  </g>
+  <g opacity="0.22" transform="translate(500,520)">
+    <ellipse cx="260" cy="120" rx="480" ry="220" fill="url(#blobGrad)" />
+  </g>
+
+  <!-- floating rounded cards (subtle) -->
+  <g opacity="0.10" fill="rgba(255,255,255,0.06)">
+    <rect x="40" y="520" width="140" height="92" rx="12" ry="12" />
+    <rect x="180" y="440" width="110" height="70" rx="10" ry="10" transform="rotate(-8 235 475)" />
+    <rect x="1320" y="520" width="160" height="110" rx="14" ry="14" />
+    <rect x="1180" y="380" width="120" height="80" rx="10" ry="10" transform="rotate(12 1240 420)" />
+  </g>
+
+  <!-- dot texture on top for subtle grain -->
+  <rect width="1600" height="900" fill="url(#dot-grid)" opacity="0.08"/>
+
+  <!-- optional vignette to darken edges slightly -->
+  <rect width="1600" height="900" fill="black" opacity="0.03"/>
+</svg>

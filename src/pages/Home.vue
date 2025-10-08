@@ -2,7 +2,7 @@
 <template>
   <div class="p-6 bg-gray-100 min-h-screen">
     <!-- Hero Section -->
-    <section class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white rounded-2xl shadow-lg p-10 text-center mb-5">
+    <!-- <section class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white rounded-2xl shadow-lg p-10 text-center mb-5">
       <h1 class="text-4xl md:text-5xl font-bold mb-4">
         Welcome to <span class="text-yellow-300">MediaHub</span>
       </h1>
@@ -10,8 +10,11 @@
         Upload, explore, and share your favorite images, videos, and audio
         files — all in one place.
       </p>
-    </section>
-    <div class="flex justify-between items-center mb-6">
+    </section> -->
+
+    <HeroSection @scroll-to-media="handleScrollToMedia"/>
+
+    <div ref="mediaLibraryRef" class="flex justify-between items-center mt-5 mb-6">
       <h1 class="text-2xl font-bold">Media Library</h1>
     </div>
 
@@ -54,11 +57,13 @@
 
 <script setup>
 import DeleteConfirmModal from "@/components/DeleteConfirmModal.vue";
+import HeroSection from "@/components/HeroSection.vue";
 import MediaCard from "@/components/MediaCard.vue";
 import { useAuthStore } from "@/stores/auth";
 import axiosApi from "@/utils/axiosApi";
 import notify from "@/utils/notify";
 import { ref, onMounted, computed } from "vue";
+
 const auth = useAuthStore();
 
 // Media and Categories state
@@ -69,6 +74,8 @@ const BASE_URL = import.meta.env.VITE_API_URL;
 
 const showDeleteModal = ref(false)
 const mediaToDelete = ref(null)
+
+const mediaLibraryRef = ref(null);
 
 const openDeleteModal = (id) => {
   mediaToDelete.value = id
@@ -122,6 +129,17 @@ const filteredMedia = computed(() => {
   if (!selectedCategory.value) return mediaItems.value;
   return mediaItems.value.filter((m) => m.category_id === selectedCategory.value);
 });
+
+// handleScrollToMedia
+
+function handleScrollToMedia(){
+  if (mediaLibraryRef.value) {
+        mediaLibraryRef.value.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+        });
+    }
+}
 
 // Load data on mounted
 onMounted(() => {

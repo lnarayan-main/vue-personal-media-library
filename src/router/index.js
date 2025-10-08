@@ -2,6 +2,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
+
 import Home from '../pages/Home.vue'
 import Dashboard from '../pages/Dashboard.vue'
 import MediaList from '../pages/MediaList.vue'
@@ -18,7 +21,12 @@ import ResetPassword from '../pages/ResetPassword.vue'
 import MediaManagement from '@/pages/MediaManagement.vue'
 import UserView from '@/pages/UserView.vue'
 import MediaView from '@/pages/MediaView.vue'
+
 import NotFound from '@/pages/NotFound.vue'
+import PrivacyPolicy from "../pages/PrivacyPolicy.vue";
+import TermsOfService from "../pages/TermsOfService.vue";
+import ContactUs from "../pages/ContactUs.vue";
+
 
 const routes = [
   { path: '/', name: 'Home', component: Home, meta: { requiresAuth: false } },
@@ -72,6 +80,10 @@ const routes = [
     meta: { requiresAuth: true },
   },
 
+  { path: "/privacy", name: "privacy", component: PrivacyPolicy },
+  { path: "/terms", name: "terms", component: TermsOfService },
+  { path: "/contact", name: "contact", component: ContactUs },
+
   // Page Not found path
   { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound },
 ]
@@ -79,32 +91,48 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+  scrollBehavior(to, from, savedPosition) {
+    // Always scroll to top
+    return { top: 0 }
+  },
+})
+
+// --- NProgress Settings ---
+NProgress.configure({
+  showSpinner: false, // remove the small spinner
+  trickleSpeed: 200, // smoother progress
 })
 
 // Track if auth has been initialized to prevent multiple calls
-let authInitialized = false;
+let authInitialized = false
 
 // Navigation Guard
 router.beforeEach(async (to, from, next) => {
-  const auth = useAuthStore();
+  NProgress.start()
+  const auth = useAuthStore()
 
   // Initialize auth only once on first navigation
   if (!authInitialized) {
-    await auth.initAuth();
-    authInitialized = true;
+    await auth.initAuth()
+    authInitialized = true
   }
 
   // Check if route requires authentication
   if (to.meta.requiresAuth && !auth.isLoggedIn) {
-    return next("/login");
+    return next('/login')
   }
 
   // If going to login but already logged in, redirect to dashboard
-  if (to.path === "/login" && auth.isLoggedIn) {
-    return next("/dashboard");
+  if (to.path === '/login' && auth.isLoggedIn) {
+    return next('/dashboard')
   }
 
-  next();
-});
+  next()
+})
 
-export default router;
+// Stop progress after navigation completes
+router.afterEach(() => {
+  NProgress.done()
+})
+
+export default router

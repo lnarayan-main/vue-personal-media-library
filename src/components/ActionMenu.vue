@@ -10,9 +10,10 @@
     </span>
 
     <!-- 3-dot menu -->
-    <div class="relative">
+    <div class="relative inline-block">
+      <!-- 3 dots icon -->
       <button @click.stop="toggleMenu" class="p-2 rounded-full hover:bg-gray-100 focus:outline-none">
-        <!-- vertical dots icon -->
+          <!-- vertical dots icon -->
         <!-- <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -30,14 +31,14 @@
         <EllipsisVerticalIcon class="h-4 w-4" />
       </button>
 
-      <!-- Dropdown (horizontal, left side) -->
+      <!-- Dropdown (tight to icon) -->
       <transition name="fade">
         <div v-if="menuOpen"
-          class="absolute -left-32 top-1/2 -translate-y-1/2 flex items-center gap-2 bg-white border border-gray-200 rounded-full shadow-md px-2 py-1 z-20 mr-5">
+          class="absolute right-8 top-1/2 -translate-y-1/2 flex items-center gap-2 bg-white border border-gray-200 rounded-full shadow-md px-2 py-1 z-20">
           <!-- Edit -->
           <router-link v-if="canEditDelete" :to="`/media/update/${media_id}`"
             class="p-2 rounded-full text-indigo-600 hover:bg-indigo-100 transition duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            title="Edit">
+            title="Edit" @click="menuOpen = false">
             <PencilIcon class="h-4 w-4" />
           </router-link>
 
@@ -57,6 +58,8 @@
         </div>
       </transition>
     </div>
+
+
   </div>
 </template>
 

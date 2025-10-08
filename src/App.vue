@@ -14,10 +14,13 @@
          <router-view :key="$route.fullPath" />
       </main>
     </div>
+    <!-- Footer  -->
+    <Footer />
   </div>
 </template>
 
 <script setup>
+import Footer from "./components/Footer.vue";
 import Navbar from "./components/Navbar.vue";
 import Sidebar from "./components/Sidebar.vue";
 import { useAuthStore } from "./stores/auth";

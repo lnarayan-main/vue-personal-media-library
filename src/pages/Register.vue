@@ -77,6 +77,7 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import axiosApi from "@/utils/axiosApi";
+import notify from "@/utils/notify";
 
 const BASE_URL = import.meta.env.VITE_API_URL;
 
@@ -108,13 +109,14 @@ const registerUser = async () => {
     // }
 
     const response = await axiosApi.post("user/register", formData);
-
-    console.log(response.data);
-    alert("Registration successful!");
-    router.push("/login");
+    notify.success(response.data?.message);
+    setTimeout(() => {
+      router.push("/login");
+    }, 2000);
   } catch (error) {
     console.error(error);
-    alert(error.response?.data?.detail || "Registration failed");
+    const errMsg = error.response?.data?.detail || "Registration failed";
+    notify.error(errMsg);
   } finally {
     saving.value = false;
   }
@@ -122,5 +124,5 @@ const registerUser = async () => {
 </script>
 
 <style scoped>
-/* optional additional styling */
+
 </style>

@@ -14,6 +14,7 @@ const loading = ref(true)
 onMounted(async () => {
     try {
         const res = await axiosApi.get(`media-view/${mediaId}`)
+        console.log(res.data);
         media.value = res.data
     } catch (error) {
         toast.error(error.response?.data?.detail || 'Failed to fetch media details')
@@ -81,6 +82,11 @@ onMounted(async () => {
                         :class="media.status === 'active' ? 'text-green-600 font-semibold' : 'text-red-600 font-semibold'">
                         {{ media.status }}
                     </span>
+                </div>
+
+                <div class="flex justify-between border-b pb-2">
+                    <span class="font-semibold text-gray-600">Owner:</span>
+                    <span class="text-gray-800 capitalize">{{ media.owner?.name || 'N/A' }}</span>
                 </div>
 
                 <div>

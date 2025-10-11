@@ -48,7 +48,7 @@ export const useAuthStore = defineStore('auth', {
     async login(credentials) {
       try {
         const res = await axios.post(
-          BASE_URL + 'auth/login',
+          `${BASE_URL}auth/login`,
           {
             email: credentials.email,
             password: credentials.password,
@@ -78,6 +78,7 @@ export const useAuthStore = defineStore('auth', {
 
         return { success: true }
       } catch (err) {
+        console.error(err);
         const message = err.response?.data?.detail || 'Login failed. Please try again.'
         console.error('Login failed:', message)
         return { success: false, message }

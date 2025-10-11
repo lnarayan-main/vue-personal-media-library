@@ -147,6 +147,7 @@
 import { ref, onMounted } from "vue";
 import { goBack } from "@/utils/helpers";
 import axiosApi from "@/utils/axiosApi";
+import router from "@/router";
 
 const BASE_URL = import.meta.env.VITE_API_URL;
 
@@ -228,7 +229,7 @@ function resetForm() {
   selectedFile.value = null;
   selectedThumbnail.value = null;
   filePreview.value = null;
-  thumbnailPreview.value = null;
+  // thumbnailPreview.value = null;
   // message.value = { text: "", type: "" };
 }
 
@@ -255,6 +256,7 @@ async function submitForm() {
 
     message.value = { text: "Media created successfully!", type: "success" };
     resetForm();
+    setTimeout(() => router.push("/media"), 1200);
   } catch (err) {
     console.error(err);
     message.value = { text: err.response?.data?.detail || "Failed to create media.", type: "error" };

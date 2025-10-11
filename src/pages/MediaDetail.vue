@@ -55,12 +55,15 @@
               <strong>Uploaded:</strong>
               {{ new Date(media.created_at).toLocaleString() }}
             </p>
+            <p><strong>Owner:</strong> {{ media.owner?.name }}</p>
           </div>
 
           <!-- Description Below Metadata -->
           <p class="text-gray-700 leading-relaxed">
             {{ media.description }}
           </p>
+            <MediaInteractionButtons :media_id="media.id" />
+            <Comments :media_id="media.id"/>
         </div>
       </div>
     </div>
@@ -95,6 +98,8 @@ import { getFileUrl } from "@/utils/helpers";
 import router from "@/router";
 import AudioPlayCard from "@/components/AudioPlayCard.vue";
 import MediaCardSimple from "@/components/MediaCardSimple.vue";
+import MediaInteractionButtons from "@/components/MediaInteractionButtons.vue";
+import Comments from "@/components/Comments.vue";
 
 const route = useRoute();
 const media = ref(null);

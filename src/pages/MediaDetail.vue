@@ -81,7 +81,10 @@
             <p>
               <strong class="font-medium text-gray-500">Uploaded:</strong>
               <!-- <span class="ml-1">{{ new Date(media.created_at).toLocaleString() }}</span> -->
-              <span class="ml-1">{{ new Date(media.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) }}</span>
+              <span class="ml-1">{{ new Date(media.created_at).toLocaleDateString(undefined, {
+                month: 'short', day:
+                  'numeric', year: 'numeric'
+              }) }}</span>
             </p>
           </div>
 
@@ -90,8 +93,8 @@
 
         <!-- Description -->
         <div class="mt-2 border-t border-gray-200 pt-2">
-           <p class="text-gray-500 font-bold text-sm">
-            12K Views
+          <p class="text-gray-500 font-bold text-sm">
+            {{ media.views }} Views
             <span class="pl-2 text-xs text-gray-500 font-bold">{{ timeAgo(media.created_at) }}</span>
           </p>
           <p class="text-gray-700 leading-relaxed whitespace-pre-line">
@@ -194,9 +197,23 @@ function goBack() {
   else router.push("/media");
 }
 
+async function incrementMediaViews() {
+  const id = route.params.id;
+  if (id) {
+    try {
+      await axiosApi.post(`media/views/${id}`);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+}
+
 onMounted(() => {
   fetchCategories();
   fetchMedia();
   fetchMediaList();
+  setTimeout(() => {
+    incrementMediaViews();
+  }, 8000);
 });
 </script>

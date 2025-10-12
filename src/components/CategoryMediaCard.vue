@@ -20,7 +20,7 @@
         <span>{{ media.owner?.name }}</span>
       </router-link>
       <p class="text-gray-500 font-bold text-sm">
-        12K Views
+        {{ media.views }} Views
         <span class="pl-2 text-xs text-gray-500 font-bold">{{ timeAgo(media.created_at) }}</span>
       </p>
     </div>

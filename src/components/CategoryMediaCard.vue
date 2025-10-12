@@ -17,7 +17,7 @@
         <h1 class="font-bold text-gray-800 mb-2 line-clamp-2">
           {{ media.title }}
         </h1>
-        <span>{{ media.owner?.name }}</span>
+        <span>{{ media.user?.name }}</span>
       </router-link>
       <p class="text-gray-500 font-bold text-sm">
         {{ media.views }} Views

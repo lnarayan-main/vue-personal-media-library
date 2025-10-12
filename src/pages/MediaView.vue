@@ -86,7 +86,7 @@ onMounted(async () => {
 
                 <div class="flex justify-between border-b pb-2">
                     <span class="font-semibold text-gray-600">Owner:</span>
-                    <span class="text-gray-800 capitalize">{{ media.owner?.name || 'N/A' }}</span>
+                    <span class="text-gray-800 capitalize">{{ media.user?.name || 'N/A' }}</span>
                 </div>
 
                 <div>

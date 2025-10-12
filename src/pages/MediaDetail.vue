@@ -45,9 +45,9 @@
             <!-- 1. Owner Profile Picture & Name -->
             <span class="flex items-center gap-2">
               <!-- ProfilePic and Name -->
-              <ProfilePic :url="media.owner?.profile_pic_url" class="w-8 h-8 rounded-full" />
+              <ProfilePic :url="media.user?.profile_pic_url" class="w-8 h-8 rounded-full" />
               <p class="font-semibold text-gray-800">
-                {{ media.owner.name }}
+                {{ media.user.name }}
               </p>
             </span>
 

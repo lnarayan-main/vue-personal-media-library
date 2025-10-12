@@ -11,27 +11,18 @@
             <ProfilePic :url="auth.currentUser?.profile_pic_url" class="w-10 h-10 flex-shrink-0 mt-1" />
 
             <div class="flex flex-col flex-grow">
-                <input 
-                    type="text" 
-                    id="comments" 
-                    placeholder="Add a comment..."
+                <input type="text" id="comments" placeholder="Add a comment..."
                     class="w-full border-b border-gray-300 focus:border-blue-600 focus:outline-none py-2 text-base text-gray-800 placeholder-gray-500 transition-colors"
-                    v-model="newCommentContent" 
-                    @focus="onFocus"
-                    @keyup.enter="onClickComment"
-                />
+                    v-model="newCommentContent" @focus="onFocus" @keyup.enter="onClickComment" />
 
                 <!-- Action buttons (Cancel/Comment) shown only when focused -->
                 <div v-show="isFocus" class="flex justify-end gap-3 mt-3">
-                    <button 
-                        @click="onClickCancel"
+                    <button @click="onClickCancel"
                         class="px-4 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-full hover:bg-gray-200 transition duration-150">
                         Cancel
                     </button>
 
-                    <button 
-                        @click="onClickComment" 
-                        :disabled="!newCommentContent.trim()"
+                    <button @click="onClickComment" :disabled="!newCommentContent.trim()"
                         class="px-4 py-1.5 text-sm font-medium rounded-full text-white transition duration-150"
                         :class="newCommentContent.trim() ? 'bg-blue-600 hover:bg-blue-700 shadow-md' : 'bg-gray-300 text-gray-500 cursor-not-allowed'">
                         Comment
@@ -44,27 +35,33 @@
         <div class="space-y-6">
             <div v-for="comment in totalComments" :key="comment.id" class="flex items-start gap-4">
                 <!-- Commenter Profile Pic -->
-                <ProfilePic :url="comment.owner?.profile_pic_url" class="w-10 h-10 flex-shrink-0 mt-1" />
-                
+                <ProfilePic :url="comment.user?.profile_pic_url" class="w-10 h-10 flex-shrink-0 mt-1" />
+
                 <div class="flex-grow">
                     <!-- Commenter Name and Time -->
                     <div class="flex items-center space-x-2 mb-1">
-                        <p class="font-semibold text-sm text-gray-800">{{ comment.owner?.name || 'User' }}</p>
+                        <p class="font-semibold text-sm text-gray-800">{{ comment.user?.name || 'User' }}</p>
                         <span class="text-xs text-gray-500">{{ timeAgo(comment.created_at) }}</span>
                     </div>
-                    
+
                     <!-- Comment Content -->
                     <p class="text-gray-700 text-sm whitespace-pre-wrap">{{ comment.content }}</p>
 
                     <!-- Optional: Add Reply/Like actions here in the future -->
                     <div class="flex gap-4 mt-2 text-xs text-gray-500">
-                        <button class="hover:text-blue-600">👍 0</button>
-                        <button class="hover:text-blue-600">👎 0</button>
-                        <button class="hover:text-blue-600">Reply</button>
+                        <button @click="onClickToReact(comment.id, true)"
+                            class="hover:text-gray-600 hover:cursor-pointer flex gap-1">
+                            <HandThumbUpIcon class="h-4 w-4" /> {{ countLikes(comment.reactions) }}
+                        </button>
+                        <button @click="onClickToReact(comment.id, false)"
+                            class="hover:text-gray-600 hover:cursor-pointer flex gap-1">
+                            <HandThumbDownIcon class="h-4 w-4" /> {{ countDisLikes(comment.reactions) }}
+                        </button>
+                        <button class="hover:text-gray-600 hover:cursor-pointer">Reply</button>
                     </div>
                 </div>
             </div>
-            
+
             <p v-if="!totalComments || totalComments.length === 0" class="text-center text-gray-500 py-8">
                 No comments yet. Be the first to start the conversation!
             </p>
@@ -79,6 +76,7 @@ import { onMounted, ref } from 'vue'
 import ProfilePic from './ProfilePic.vue'
 import { useAuthStore } from '@/stores/auth'
 import { timeAgo } from '@/utils/helpers'
+import { HandThumbDownIcon, HandThumbUpIcon } from '@heroicons/vue/20/solid'
 
 const auth = useAuthStore();
 
@@ -89,7 +87,7 @@ const props = defineProps({
 
 const newCommentContent = ref('')
 const isFocus = ref(false)
-const totalComments = ref(null) // Will hold the array of comments
+const totalComments = ref(null)
 
 
 function onFocus() {
@@ -109,9 +107,9 @@ async function onClickComment() {
         const mediaId = props.media_id;
         // Assuming your backend expects 'content'
         const res = await axiosApi.post(`media/${mediaId}/comments`, { content: commentData });
-        
+
         notify.success("Comment posted successfully!");
-        
+
         // Clear the input and reset focus state
         newCommentContent.value = '';
         isFocus.value = false;
@@ -129,14 +127,52 @@ async function onClickComment() {
 async function fetchMediaComments() {
     try {
         const mediaId = props.media_id;
-        // NOTE: Ensure your API response for comments includes the 'user' object for each comment, 
-        // which contains 'name' and 'profile_pic_url'.
         const res = await axiosApi.get(`media/${mediaId}/comments`);
-        totalComments.value = Array.isArray(res.data) ? res.data : []; // Ensure it's an array
+        totalComments.value = Array.isArray(res.data) ? res.data : [];
     } catch (err) {
         console.error("Error fetching comments:", err);
         totalComments.value = [];
     }
+}
+
+
+async function onClickToReact(commentId, isLike) {
+    const comment = totalComments.value.find(c => c.id == commentId);
+    if (!comment) return;
+
+    const userId = auth.currentUser?.id;
+    if (!userId) {
+        notify.error("Please login to react.")
+        return;
+    }
+
+    const existingReaction = comment.reactions.find(r => r.user_id == userId);
+
+    if(existingReaction && existingReaction.is_like === isLike) {
+        notify.info(`You already ${isLike ? "liked" : "disliked"} this comment,`);
+        return;
+    }
+
+    try {
+        const res = await axiosApi.post(`comment/${commentId}/reaction`, { is_like: isLike });
+        notify.success(res.data?.message);
+        if (existingReaction) {
+            existingReaction.is_like = isLike;
+        } else {
+            comment.reactions.push({ user_id: userId, is_like: isLike });
+        }
+    } catch (err) {
+        const errMsg = err.response?.data?.detail || "Failed to react.";
+        notify.error(errMsg);
+    }
+}
+
+function countLikes(reactions) {
+    return reactions.filter(r => r.is_like).length;
+}
+
+function countDisLikes(reactions) {
+    return reactions.filter(r => !r.is_like).length;
 }
 
 onMounted(() => {
@@ -144,4 +180,3 @@ onMounted(() => {
 })
 
 </script>
-

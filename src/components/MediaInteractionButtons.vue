@@ -6,18 +6,11 @@ import { onMounted, ref } from 'vue'
 
 
 const props = defineProps({
-  // likes: { type: Number, default: 0 },
-  // dislikes: { type: Number, default: 0 },
-  // comments: { type: Number, default: 0 },
   media_id: Number
 })
 
-// const likesCount = ref(props.likes);
-// const dislikesCount = ref(props.dislikes);
-
 const likesCount = ref(0);
 const dislikesCount = ref(0);
-// const commentsCount = ref(0);
 
 
 async function onClickToReact(isLike: boolean) {

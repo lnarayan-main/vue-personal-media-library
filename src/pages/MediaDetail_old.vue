@@ -49,7 +49,7 @@
               <strong>Uploaded:</strong>
               {{ new Date(media.created_at).toLocaleString() }}
             </p>
-            <p><strong>Owner:</strong> {{ media.owner?.name }}</p>
+            <p><strong>Owner:</strong> {{ media.user?.name }}</p>
           </div>
 
           <!-- Description Below Metadata -->

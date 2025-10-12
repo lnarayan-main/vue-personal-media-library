@@ -1,6 +1,7 @@
 
 const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL || 'http://localhost:8000/';
 import router from "@/router";
+import axiosApi from "./axiosApi";
 
 export function getFileUrl(file_url){
     if (!file_url){
@@ -69,4 +70,33 @@ export function goBack(path){
 
 export function getToken() {
   return localStorage.getItem("token");
+}
+
+
+export function timeAgo(dateString) {
+    const now = new Date();
+    const past = new Date(dateString);
+    const seconds = Math.floor((now - past) / 1000);
+
+    let interval = seconds / 31536000;
+    if (interval > 1) {
+        return Math.floor(interval) + " years ago";
+    }
+    interval = seconds / 2592000;
+    if (interval > 1) {
+        return Math.floor(interval) + " months ago";
+    }
+    interval = seconds / 86400;
+    if (interval > 1) {
+        return Math.floor(interval) + " days ago";
+    }
+    interval = seconds / 3600;
+    if (interval > 1) {
+        return Math.floor(interval) + " hours ago";
+    }
+    interval = seconds / 60;
+    if (interval > 1) {
+        return Math.floor(interval) + " minutes ago";
+    }
+    return "just now";
 }

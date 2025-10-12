@@ -9,7 +9,7 @@
       <Sidebar v-if="auth.isLoggedIn" />
 
       <!-- Main content -->
-      <main class="flex-1 p-6">
+      <main class="flex-1 p-8">
         <!-- <router-view /> -->
          <router-view :key="$route.fullPath" />
       </main>

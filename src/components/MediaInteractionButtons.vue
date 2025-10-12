@@ -53,23 +53,17 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex items-center gap-4">
+  <div class="flex items-center gap-1">
     <!-- Likes -->
-    <button @click="onClickToReact(true)" class="flex items-center gap-1 p-2 rounded-full hover:bg-green-50 transition">
-      <HandThumbUpIcon class="h-5 w-5 text-green-500" />
+    <button @click="onClickToReact(true)" class="flex items-center gap-1 p-2 rounded-full hover:bg-gray-250 transition hover:cursor-pointer">
+      <HandThumbUpIcon class="h-5 w-5" />
       <span class="text-sm font-medium text-gray-700">{{ likesCount }}</span>
     </button>
-
+    <div class="h-4 w-px bg-gray-300"></div>
     <!-- Dislikes -->
-    <button @click="onClickToReact(false)" class="flex items-center gap-1 p-2 rounded-full hover:bg-red-50 transition">
-      <HandThumbDownIcon class="h-5 w-5 text-red-500" />
-      <span class="text-sm font-medium text-gray-700">{{ dislikesCount }}</span>
+    <button @click="onClickToReact(false)" class="flex items-center gap-1 p-2 rounded-full hover:bg-gray-250 transition hover:cursor-pointer">
+      <HandThumbDownIcon class="h-5 w-5" />
+      <!-- <span class="text-sm font-medium text-gray-700">{{ dislikesCount }}</span> -->
     </button>
-
-    <!-- Comments -->
-    <!-- <button class="flex items-center gap-1 p-2 rounded-full hover:bg-gray-50 transition">
-      <ChatBubbleLeftEllipsisIcon class="h-5 w-5 text-gray-500" />
-      <span class="text-sm font-medium text-gray-700">{{ commentsCount }}</span>
-    </button> -->
   </div>
 </template>

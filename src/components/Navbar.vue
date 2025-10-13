@@ -1,9 +1,12 @@
 <template>
   <nav class="bg-white shadow-md px-6 py-3 flex items-center justify-between sticky top-0 z-50">
-    <!-- Logo -->
-    <router-link to="/" class="text-2xl font-bold text-indigo-600">
-      MediaHub
-    </router-link>
+    <div class="flex items-center space-x-4">
+      <Bars3Icon @click="handleClick" class="h-8 w-8 hover:cursor-pointer"/>
+      <!-- Logo -->
+      <router-link to="/" class="text-2xl font-bold text-indigo-600">
+        MediaHub
+      </router-link>
+    </div>
 
     <!-- Navigation Links -->
     <div class="hidden md:flex space-x-6">
@@ -15,76 +18,9 @@
       ]">
         Home
       </router-link> -->
-      <!-- <router-link
-        to="/media"
-        :class="[
-          'text-gray-700 hover:text-indigo-600 font-medium',
-          route.path.startsWith('/media') 
-            ? 'text-indigo-600' 
-            : 'text-gray-700'
-        ]"
-      >
-        Media
-      </router-link> -->
-      <!-- <router-link
-        v-if="auth.isLoggedIn"
-        to="/categories"
-        :class="[
-          'text-gray-700 hover:text-indigo-600 font-medium',
-          route.path.startsWith('/categories') 
-            ? 'text-indigo-600' 
-            : 'text-gray-700'
-        ]"
-      >
-        Categories
-      </router-link> -->
-      <!-- <router-link
-        v-if="auth.isLoggedIn" 
-        to="/dashboard"
-        :class="[
-          'text-gray-700 hover:text-indigo-600 font-medium',
-          route.path.startsWith('/dashboard') 
-            ? 'text-indigo-600' 
-            : 'text-gray-700'
-        ]"
-      >
-        Dashboard
-      </router-link> -->
     </div>
 
-    <!-- User Profile/Login -->
-    <!-- <div>
-      <router-link v-if="!auth.isLoggedIn" to="/login"
-        class="px-4 py-2 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-500 transition">
-        Login
-      </router-link>
-
-      <button v-else @click="auth.logout"
-        class="px-4 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-500 transition">
-        Logout
-      </button>
-
-    </div> -->
-
     <div class="flex items-center space-x-6">
-      <!-- Authenticated User Actions -->
-      <!-- <div v-if="auth.isLoggedIn" class="flex items-center space-x-4">
-
-        <router-link to="/profile">
-          <img :src="getFileUrl(auth.currentUser.profile_pic_url) || 'https://avatar.iran.liara.run/public/38'"
-            alt="User Avatar"
-            class="h-10 w-10 object-cover rounded-full border-2 border-indigo-500 cursor-pointer hover:shadow-lg transition"
-            onerror="this.onerror=null; this.src='https://avatar.iran.liara.run/public/38''" />
-        </router-link>
-
-        <button @click="auth.logout"
-          class="px-4 py-2 bg-red-600 text-white text-sm rounded-lg font-semibold hover:bg-red-700 transition shadow-md">
-          Logout
-        </button>
-
-      </div> -->
-
-
       <div v-if="auth.isLoggedIn && auth.currentUser" class="relative flex">
 
         <span class="text-gray-700 font-medium mr-4">
@@ -136,15 +72,21 @@ import { getFileUrl } from '@/utils/helpers';
 import { onMounted, onUnmounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import router from "@/router";
+import { Bars3Icon } from '@heroicons/vue/20/solid';
 
 const auth = useAuthStore();
 const route = useRoute();
 
 const defaultAvatar = "/images/default_avatar.jpg";
 
-
 const isDropdownOpen = ref(false);
 const profileButton = ref(null);
+
+const emits = defineEmits(["menuClick"]);
+
+function handleClick(){
+  emits("menuClick");
+}
 
 const toggleDropdown = () => {
   isDropdownOpen.value = !isDropdownOpen.value;

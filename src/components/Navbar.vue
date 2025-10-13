@@ -1,7 +1,7 @@
 <template>
   <nav class="bg-white shadow-md px-6 py-3 flex items-center justify-between sticky top-0 z-50">
     <div class="flex items-center space-x-4">
-      <Bars3Icon @click="handleClick" class="h-8 w-8 hover:cursor-pointer"/>
+      <Bars3Icon v-if="auth.isLoggedIn" @click="handleClick" class="h-8 w-8 hover:cursor-pointer"/>
       <!-- Logo -->
       <router-link to="/" class="text-2xl font-bold text-indigo-600">
         MediaHub
@@ -34,19 +34,27 @@
         </button>
 
         <div v-if="isDropdownOpen"
-          class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl py-1 z-20 border border-gray-100">
+          class="absolute right-0 mt-10 w-48 bg-white rounded-lg shadow-xl py-1 z-20 border border-gray-100">
 
           <!-- <div class="px-4 py-2 text-sm text-gray-700 border-b mb-1 truncate">
                 {{ auth.currentUser.email }}
             </div> -->
 
           <router-link to="/profile" @click="isDropdownOpen = false"
-            class="block px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+            class="px-4 py-2 text-gray-700 hover:bg-gray-100 transition flex gap-2">
+            <UserCircleIcon class="h-5 w-5"/>
             Profile
           </router-link>
 
+          <router-link to="/change-password" @click="isDropdownOpen = false"
+            class="px-4 py-2 text-gray-700 hover:bg-gray-100 transition flex gap-2">
+            <LockClosedIcon class="h-5 w-5"/>
+            Change Password
+          </router-link>
+
           <button @click="handleLogout"
-            class="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 transition rounded-b-lg">
+            class="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 transition rounded-b-lg flex gap-2">
+            <ArrowRightStartOnRectangleIcon class="h-5 w-5"/>
             Logout
           </button>
         </div>
@@ -72,7 +80,7 @@ import { getFileUrl } from '@/utils/helpers';
 import { onMounted, onUnmounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import router from "@/router";
-import { Bars3Icon } from '@heroicons/vue/20/solid';
+import { ArrowRightStartOnRectangleIcon, Bars3Icon, LockClosedIcon, RectangleStackIcon, UserCircleIcon } from '@heroicons/vue/20/solid';
 
 const auth = useAuthStore();
 const route = useRoute();

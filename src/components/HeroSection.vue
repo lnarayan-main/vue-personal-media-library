@@ -1,7 +1,7 @@
 <!-- src/components/HeroSection.vue -->
 <template>
-    <section
-        class="relative overflow-hidden bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 text-white py-24 animate-gradient-move">
+    <!-- <section class="relative overflow-hidden bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 text-white py-24 animate-gradient-move"> -->
+    <section class="relative overflow-hidden bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white py-10 animate-gradient-move">
 
         <div class="absolute inset-0 bg-white/10 backdrop-blur-sm"></div>
 

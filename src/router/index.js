@@ -26,6 +26,7 @@ import NotFound from '@/pages/NotFound.vue'
 import PrivacyPolicy from "../pages/PrivacyPolicy.vue";
 import TermsOfService from "../pages/TermsOfService.vue";
 import ContactUs from "../pages/ContactUs.vue";
+import ChangePassword from '@/pages/ChangePassword.vue'
 
 
 const routes = [
@@ -34,6 +35,7 @@ const routes = [
   { path: '/register', name: 'Register', component: Register },
   { path: '/forgot-password', name: 'ForgotPassword', component: ForgotPassword },
   { path: '/reset-password/:token', name: 'ResetPassword', component: ResetPassword, props: true },
+  { path: "/change-password", name: "change_password", component: ChangePassword, meta: {requiresAuth: true} },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard, meta: { requiresAuth: true } },
   { path: '/media', name: 'MediaList', component: MediaList, meta: { requiresAuth: true } },
   {

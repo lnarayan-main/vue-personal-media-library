@@ -68,19 +68,38 @@
 
           <!-- Right: password fields -->
           <div>
+            <!-- New Password -->
             <label class="block text-sm font-medium text-gray-700 mb-1">New Password</label>
-            <input v-model="form.newPassword" type="password" placeholder="Leave blank to keep current password"
-              class="block w-full px-4 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500" />
+            <div class="relative">
+              <input v-model="form.newPassword" :type="showNewPassword ? 'text' : 'password'"
+                placeholder="Leave blank to keep current password"
+                class="block w-full px-4 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500 pr-10" />
+              <button type="button" @click="showNewPassword = !showNewPassword"
+                class="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none">
+                <component :is="showNewPassword ? EyeSlashIcon : EyeIcon" class="w-5 h-5" />
+              </button>
+            </div>
 
+            <!-- Confirm Password -->
             <label class="block text-sm font-medium text-gray-700 mb-1 mt-4">Confirm Password</label>
-            <input v-model="form.confirmPassword" type="password" placeholder="Confirm new password"
-              class="block w-full px-4 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500" />
+            <div class="relative">
+              <input v-model="form.confirmPassword" :type="showConfirmPassword ? 'text' : 'password'"
+                placeholder="Confirm new password"
+                class="block w-full px-4 py-2 border rounded-md border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500 pr-10" />
+              <button type="button" @click="showConfirmPassword = !showConfirmPassword"
+                class="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none">
+                <component :is="showConfirmPassword ? EyeSlashIcon : EyeIcon" class="w-5 h-5" />
+              </button>
+            </div>
 
-            <p class="text-sm text-gray-500 mt-3">Leave password fields blank if you don’t want to change your password.
+            <!-- Helper Text -->
+            <p class="text-sm text-gray-500 mt-3">
+              Leave password fields blank if you don’t want to change your password.
             </p>
 
             <p v-if="passwordError" class="text-sm text-red-600 mt-2">{{ passwordError }}</p>
           </div>
+
         </div>
 
         <!-- server error / success message -->
@@ -109,12 +128,16 @@
 import { ref, onMounted, computed } from "vue";
 import { getFileUrl } from "@/utils/helpers";
 import axiosApi from "@/utils/axiosApi";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/vue/20/solid";
 
 // Adjust these if your backend URLs differ
 const BASE_URL = import.meta.env.VITE_API_URL;
 
 // defaults
 const defaultAvatar = "/images/default_avatar.jpg";
+
+const showNewPassword = ref(false);
+const showConfirmPassword = ref(false);
 
 // reactive state
 const profile = ref({
@@ -125,12 +148,6 @@ const profile = ref({
   profile_pic_url: ""
 });
 
-const profilePictureUrl = computed(() => {
-  if (profile.value.profile_pic_url) {
-    return `${BASE_URL}${profile.value.profile_pic_url}`;
-  }
-  return null;
-});
 
 
 const form = ref({
@@ -141,7 +158,7 @@ const form = ref({
   confirmPassword: "",
 });
 
-const preview = ref(null); // objectURL preview for newly selected image
+const preview = ref(null);
 const selectedFile = ref(null);
 const fileInput = ref(null);
 const saving = ref(false);
@@ -181,7 +198,6 @@ function onFileChange(e) {
 function removeSelectedPhoto() {
   selectedFile.value = null;
   preview.value = null;
-  // optionally also clear profile.avatar to remove on server side
 }
 
 function resetForm() {

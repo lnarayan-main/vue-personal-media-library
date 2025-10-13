@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import axiosApi from "@/utils/axiosApi";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/vue/20/solid";
 
 const route = useRoute();
 const router = useRouter();
@@ -12,6 +13,8 @@ const confirmPassword = ref("");
 const message = ref("");
 const error = ref("");
 const loading = ref(false);
+const showPassword = ref(false);
+const showConfirmPassword = ref(false);
 
 const handleSubmit = async () => {
   error.value = "";
@@ -24,6 +27,16 @@ const handleSubmit = async () => {
 
   if (password.value !== confirmPassword.value) {
     error.value = "Passwords do not match.";
+    return;
+  }
+
+  if (password.value.length < 8) {
+    error.value = "Password must be at least 8 characters.";
+    return;
+  }
+
+  if (password.value.length > 32) {
+    error.value = "Password must not be greater than 32 characters.";
     return;
   }
 
@@ -55,29 +68,32 @@ const handleSubmit = async () => {
       <form @submit.prevent="handleSubmit" class="space-y-4">
         <div>
           <label class="block text-gray-700 mb-1">New Password</label>
-          <input
-            type="password"
-            v-model="password"
-            class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-400"
-            placeholder="Enter new password"
-          />
+          <div class="relative">
+            <input :type="showPassword ? 'text' : 'password'" v-model="password"
+              class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-400 pr-10"
+              placeholder="Enter new password" />
+            <button type="button" @click="showPassword = !showPassword"
+              class="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none hover:cursor-pointer">
+              <component :is="showPassword ? EyeSlashIcon : EyeIcon" class="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         <div>
           <label class="block text-gray-700 mb-1">Confirm Password</label>
-          <input
-            type="password"
-            v-model="confirmPassword"
-            class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-400"
-            placeholder="Confirm new password"
-          />
+          <div class="relative">
+            <input :type="showConfirmPassword ? 'text' : 'password'" v-model="confirmPassword"
+              class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-400 pr-10"
+              placeholder="Confirm new password" />
+            <button type="button" @click="showConfirmPassword = !showConfirmPassword"
+              class="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none hover:cursor-pointer">
+              <component :is="showConfirmPassword ? EyeSlashIcon : EyeIcon" class="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
-        <button
-          type="submit"
-          :disabled="loading"
-          class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
-        >
+        <button type="submit" :disabled="loading"
+          class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
           {{ loading ? "Resetting..." : "Reset Password" }}
         </button>
 

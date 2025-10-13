@@ -16,15 +16,26 @@
         <!-- Email -->
         <div>
           <label for="email" class="block text-sm font-medium text-gray-600 mb-1">Email</label>
-          <input id="email" v-model="email" type="email" required placeholder="you@example.com"
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          <div class="relative">
+            <input id="email" v-model="email" type="email" required placeholder="you@example.com"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 pr-10" />
+            <EnvelopeIcon
+              class="w-5 h-5 absolute inset-y-3 right-3 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none" />
+          </div>
         </div>
 
         <!-- Password -->
         <div>
           <label for="password" class="block text-sm font-medium text-gray-600 mb-1">Password</label>
-          <input id="password" v-model="password" type="password" required placeholder="••••••••"
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          <div class="relative">
+            <input id="password" v-model="password" :type="showPassword ? 'text' : 'password'" required
+              placeholder="••••••••"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 pr-10" />
+            <button type="button" @click="showPassword = !showPassword"
+              class="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none hover:cursor-pointer">
+              <component :is="showPassword ? EyeSlashIcon : EyeIcon" class="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         <!-- Remember Me -->
@@ -61,6 +72,7 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
+import { EnvelopeIcon, EyeIcon, EyeSlashIcon } from "@heroicons/vue/20/solid";
 
 
 const auth = useAuthStore();
@@ -72,15 +84,16 @@ const password = ref("");
 const error = ref("");
 const loading = ref(false);
 const rememberMe = ref(localStorage.getItem("remember_me") === "true");
+const showPassword = ref(false);
 
 const handleLogin = async () => {
-  const {success, message} = await auth.login({
+  const { success, message } = await auth.login({
     email: email.value,
     password: password.value,
     rememberMe: rememberMe.value
   });
 
-  
+
   if (success) {
     if (rememberMe.value) {
       localStorage.setItem("remember_me", "true");

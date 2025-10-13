@@ -21,21 +21,17 @@
           <label for="email" class="block text-sm font-medium text-gray-600 mb-1">
             Email Address
           </label>
-          <input
-            id="email"
-            v-model="email"
-            type="email"
-            required
-            placeholder="you@example.com"
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+          <div class="relative">
+
+            <input id="email" v-model="email" type="email" required placeholder="you@example.com"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 pr-10" />
+            <EnvelopeIcon
+              class="w-5 h-5 absolute inset-y-3 right-3 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none" />
+          </div>
         </div>
 
-        <button
-          type="submit"
-          :disabled="loading"
-          class="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-lg shadow hover:bg-blue-700 focus:ring-2 focus:ring-blue-400 disabled:opacity-50 transition"
-        >
+        <button type="submit" :disabled="loading"
+          class="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-lg shadow hover:bg-blue-700 focus:ring-2 focus:ring-blue-400 disabled:opacity-50 transition">
           <span v-if="loading">Sending...</span>
           <span v-else>Send Reset Link</span>
         </button>
@@ -54,6 +50,7 @@
 <script setup>
 import { ref } from "vue";
 import axiosApi from "@/utils/axiosApi";
+import { EnvelopeIcon } from "@heroicons/vue/20/solid";
 
 const email = ref("");
 const error = ref("");
@@ -69,6 +66,7 @@ const handleSubmit = async () => {
     const res = await axiosApi.post("auth/forgot-password", { email: email.value });
     success.value = res.data.message || "Reset link sent to your email.";
   } catch (err) {
+    console.error(err);
     error.value = err.response?.data?.detail || "Failed to send reset link.";
   } finally {
     loading.value = false;

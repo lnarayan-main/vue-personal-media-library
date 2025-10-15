@@ -105,7 +105,7 @@ async function confirmDelete() {
 async function fetchMedia() {
   try {
     const res = await axiosApi.get("media/list");
-    mediaItems.value = await res.data;
+    mediaItems.value = res.data;
   } catch (err) {
     console.error("Failed to fetch media items", err);
   }

@@ -100,3 +100,20 @@ export function timeAgo(dateString) {
     }
     return "just now";
 }
+
+
+export const formatDuration = (seconds) => {
+  if (typeof seconds !== 'number' || isNaN(seconds) || seconds < 0) return '00:00';
+  
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = Math.floor(seconds % 60);
+
+  const format = (val) => (val < 10 ? '0' + val : val);
+
+  if (h > 0) {
+    return `${h}:${format(m)}:${format(s)}`;
+  } else {
+    return `${format(m)}:${format(s)}`;
+  }
+};

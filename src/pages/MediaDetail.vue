@@ -1,139 +1,128 @@
 <template>
-  <div class="min-h-screen bg-gray-50 p-2 md:p-6">
-    <!-- Back Button -->
-    <!-- <button
-      @click="goBack"
-      class="inline-flex items-center gap-1 mb-4 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
-    >
-      <span class="text-lg">←</span> Back
-    </button> -->
+  <div class="min-h-screen bg-white md:bg-gray-50 px-4 py-6 md:p-8">
 
-    <!-- Loading / Error -->
-    <div v-if="loading" class="text-gray-500 mt-8 text-center">
-      Loading media...
+    <div v-if="loading" class="text-gray-500 mt-10 text-center text-lg">
+      <i class="fas fa-spinner fa-spin mr-2"></i> Loading media details...
     </div>
 
-    <div v-else-if="!media" class="text-red-500 mt-8 text-center">
-      Media not found.
+    <div v-else-if="!media" class="text-red-500 mt-10 text-center text-lg font-semibold">
+      404: Media not found.
     </div>
 
-    <!-- ✅ Show only after data is ready -->
-    <div v-else class="flex flex-col lg:flex-row gap-2">
-      <!-- LEFT SECTION -->
-      <div class="flex-1">
-        <!-- Media Display -->
-        <div class="w-full rounded-xl overflow-hidden bg-black aspect-video shadow-md flex items-center justify-center">
-          <video v-if="media.media_type === 'video'" :src="getFileUrl(media.file_url)"
-            :poster="getFileUrl(media.thumbnail_url)" controls class="w-full h-full object-cover"></video>
-
-          <AudioPlayCard v-else-if="media.media_type === 'audio'" :thumbnail_url="media.thumbnail_url"
-            :file_url="media.file_url" />
-
-          <div v-else class="text-gray-500">Unsupported media type</div>
+    <div v-else class="grid grid-cols-1 lg:grid-cols-[auto_400px] gap-6 lg:gap-8">
+      
+      <div class="min-w-0">
+        
+        <div class="w-full rounded-xl overflow-hidden bg-black shadow-2xl">
+          <VideoPlayer v-if="media.media_type === 'video'" 
+            :hls_path="media.hls_path" 
+            :thumbnail_url="getFileUrl(media.thumbnail_url)" 
+            :media="media" 
+          />
+          <div v-else-if="media.media_type === 'audio'"
+            class="aspect-video flex items-center justify-center">
+            <AudioPlayCard :thumbnail_url="media.thumbnail_url" :file_url="media.file_url" :showControls="true" />
+          </div>
+          <div v-else class="aspect-video text-gray-500 p-8 text-center bg-gray-900">Unsupported media type</div>
         </div>
-
-        <!-- Title & Meta -->
-        <h1 class="text-2xl md:text-3xl font-semibold text-gray-800 mt-4">
+        
+        <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900 mt-5 mb-3">
           {{ media.title }}
         </h1>
-
-        <div class="flex items-center justify-between text-sm text-gray-700 mt-3 p-2 border-t border-b border-gray-200">
-
-          <!-- === LEFT GROUP: Profile Pic, Name, and Interaction Buttons === -->
-          <div class="flex items-center gap-4 flex-shrink-0">
-
-            <!-- 1. Owner Profile Picture & Name -->
-            <span class="flex items-center gap-2">
-              <!-- ProfilePic and Name -->
-              <ProfilePic :url="media.user?.profile_pic_url" class="w-8 h-8 rounded-full" />
-              <p class="font-semibold text-gray-800">
-                {{ media.user.name }}
-              </p>
-            </span>
-
-            <button class="px-4 py-2 bg-gray-500 text-white rounded-3xl font-semibold hover:bg-gray-600 transition">
-              Subscribe
-            </button>
-
-          </div>
-
-          <!-- === RIGHT GROUP: Metadata (Pushed to the far right) === -->
-          <div class="flex items-center gap-5 text-gray-600 ml-auto pr-3">
-
-            <div class="flex-shrink-0 bg-gray-200 rounded-2xl">
-              <MediaInteractionButtons :media_id="media.id" />
+        
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between py-3 border-y border-gray-200 mb-4">
+          
+          <div class="flex items-center gap-4 mb-3 sm:mb-0">
+            <div class="flex items-center gap-3">
+              <ProfilePic :url="media.user?.profile_pic_url" class="w-10 h-10 rounded-full border border-gray-200 flex-shrink-0" />
+              <div>
+                <p class="font-bold text-gray-900 leading-none hover:text-indigo-600 transition">
+                  {{ media.user.name }}
+                </p>
+                <p class="text-xs text-gray-500 mt-0.5">
+                  {{ media.user?.subscribers ? media.user.subscribers.toLocaleString() + ' Subscribers' : '' }}
+                </p>
+              </div>
             </div>
 
-            <p>
-              <strong class="font-medium text-gray-500">Category:</strong>
-              <span class="ml-1 text-indigo-600">{{ media.category?.name || "Uncategorized" }}</span>
+            <button class="px-5 py-2 bg-red-600 text-white rounded-full font-semibold text-sm shadow hover:bg-red-700 transition flex-shrink-0">
+              <i class="fas fa-bell mr-1"></i> Subscribe
+            </button>
+          </div>
+          
+          <div class="flex-shrink-0 ml-auto">
+            <div class="bg-gray-100 rounded-full flex divide-x divide-gray-200">
+              <MediaInteractionButtons :media_id="media.id" />
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-gray-100 rounded-xl p-4 mt-4 text-sm hover:bg-gray-200 transition duration-300">
+          <div class="flex flex-wrap items-center gap-x-6 gap-y-2 font-medium mb-3 border-b border-gray-200 pb-2">
+            
+            <p class="text-gray-700">
+              <i class="fas fa-eye text-gray-500 mr-1"></i>
+              {{ media.views.toLocaleString() }} Views
             </p>
-
-            <!-- Separator -->
-            <div class="h-4 w-px bg-gray-300"></div>
-
-            <p>
-              <strong class="font-medium text-gray-500">Type:</strong>
-              <span class="ml-1">{{ media.media_type }}</span>
+            <p class="text-gray-700">
+              <i class="fas fa-calendar-alt text-gray-500 mr-1"></i>
+              {{ new Date(media.created_at).toLocaleDateString(undefined, {
+                month: 'short', day: 'numeric', year: 'numeric'
+              }) }} ({{ timeAgo(media.created_at) }})
             </p>
-
-            <div class="h-4 w-px bg-gray-300"></div>
-            <p>
-              <strong class="font-medium text-gray-500">Uploaded:</strong>
-              <!-- <span class="ml-1">{{ new Date(media.created_at).toLocaleString() }}</span> -->
-              <span class="ml-1">{{ new Date(media.created_at).toLocaleDateString(undefined, {
-                month: 'short', day:
-                  'numeric', year: 'numeric'
-              }) }}</span>
+            
+            <p class="text-indigo-700 font-bold sm:ml-auto">
+              <i class="fas fa-tag mr-1"></i>
+              {{ media.category?.name || "Uncategorized" }}
+            </p>
+            <p class="text-gray-700 sm:pr-0">
+              <i class="fas fa-file-alt text-gray-500 mr-1"></i>
+              Type: {{ media.media_type }}
             </p>
           </div>
 
-        </div>
-
-
-        <!-- Description -->
-        <div class="mt-2 border-t border-gray-200 pt-2">
-          <p class="text-gray-500 font-bold text-sm">
-            {{ media.views }} Views
-            <span class="pl-2 text-xs text-gray-500 font-bold">{{ timeAgo(media.created_at) }}</span>
-          </p>
-          <p class="text-gray-700 leading-relaxed whitespace-pre-line">
+          <p class="text-gray-700 leading-relaxed whitespace-pre-line text-base line-clamp-4 hover:line-clamp-none cursor-pointer">
             {{ media.description }}
           </p>
         </div>
 
-        <!-- Comments Section -->
-        <div class=" border-t border-gray-200 pt-2 px-5">
+        <div class="mt-8 border-t border-gray-200 pt-6">
           <Comments :media_id="media.id" :media="media" />
         </div>
       </div>
 
-      <!-- RIGHT SECTION: Related Media -->
-      <div class="lg:w-96 flex-shrink-0">
-        <div class="mb-4 flex gap-2 overflow-x-auto">
+      <div class="lg:sticky lg:top-8 self-start pt-0">
+        
+        <h2 class="text-xl font-bold text-gray-900 mb-4">Related Media</h2>
+
+        <div class="mb-5 flex gap-3 overflow-x-auto pb-2 border-b border-gray-200">
           <button @click="selectedCategory = null" :class="[
-            'px-4 py-2 rounded-lg text-white',
-            selectedCategory === null ? 'bg-blue-600' : 'bg-gray-500 hover:bg-gray-600'
+            'px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap',
+            selectedCategory === null ? 'bg-indigo-600 text-white shadow-md' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
           ]">
             All
           </button>
           <button v-for="cat in categories" :key="cat.id" @click="selectedCategory = cat.id" :class="[
-            'px-4 py-2 rounded-lg text-white',
-            selectedCategory === cat.id ? 'bg-blue-600' : 'bg-gray-500 hover:bg-gray-600'
+            'px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap',
+            selectedCategory === cat.id ? 'bg-indigo-600 text-white shadow-md' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
           ]">
             {{ cat.name }}
           </button>
         </div>
-        <div class="flex flex-col gap-4">
+        
+        <div class="flex flex-col gap-3">
           <CategoryMediaCard v-for="item in filteredMedia" :key="item.id" :media="item"
-            class="hover:scale-[1.01] transition-transform duration-300" />
+            class="hover:shadow-lg transition-shadow duration-200" 
+          />
         </div>
       </div>
     </div>
   </div>
 </template>
 
+
 <script setup>
+// ... (script setup remains largely the same, but imports are crucial)
 import { ref, onMounted, computed } from "vue";
 import { useRoute } from "vue-router";
 import router from "@/router";
@@ -144,6 +133,7 @@ import MediaInteractionButtons from "@/components/MediaInteractionButtons.vue";
 import Comments from "@/components/Comments.vue";
 import CategoryMediaCard from "@/components/CategoryMediaCard.vue";
 import ProfilePic from "@/components/ProfilePic.vue";
+import VideoPlayer from "@/components/VideoPlayer.vue";
 
 const route = useRoute();
 const media = ref(null);
@@ -158,14 +148,12 @@ async function fetchMedia() {
     const id = route.params.id;
     const res = await axiosApi.get(`media/${id}/details`);
     media.value = res.data.media;
-    // items.value = res.data.related_media || [];
   } catch (err) {
     console.error("Failed to fetch media", err);
   } finally {
     loading.value = false;
   }
 }
-
 
 // Fetch all media items
 async function fetchMediaList() {

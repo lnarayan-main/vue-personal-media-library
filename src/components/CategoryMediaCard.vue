@@ -1,41 +1,48 @@
 <template>
-  <div v-if="media" class="bg-white rounded-2xl shadow-lg p-1 flex flex-col md:flex-row gap-2">
-    <!-- Left: Media Display -->
-    <router-link :to="`/media/detail/${media.id}`" class="flex-1">
-      <div class="w-full rounded overflow-hidden bg-gray-900 aspect-video shadow-md flex items-center justify-center">
-        <video v-if="media.media_type === 'video'" :src="getFileUrl(media.file_url)"
-          :poster="getFileUrl(media.thumbnail_url)" class="w-full h-full object-cover"></video>
-        <AudioPlayCard v-else-if="media.media_type === 'audio'" :thumbnail_url="media.thumbnail_url"
-          :file_url="media.file_url" />
-        <div v-else class="text-gray-500">Unsupported media type</div>
+  <router-link :to="`/media/detail/${media.id}`" 
+    class="flex gap-2 p-1 hover:bg-gray-100 rounded-lg transition duration-150 group"
+  >
+    
+    <div class="w-24 h-16 flex-shrink-0 relative"> 
+      
+      <div v-if="media.duration"
+        class="absolute bottom-1 right-1 bg-black bg-opacity-70 text-white text-xs px-1.5 py-0.5 rounded z-10 font-medium"
+      >
+        {{ formatDuration(media.duration) }}
       </div>
-    </router-link>
+      
+      <div class="w-full h-full rounded-md overflow-hidden bg-gray-900 flex items-center justify-center">
+        <img v-if="media.thumbnail_url" 
+          :src="getFileUrl(media.thumbnail_url)" 
+          alt="Media Thumbnail"
+          class="w-full h-full object-cover"
+        />
+        <div v-else class="text-xs text-gray-400">No Image</div>
+      </div>
+    </div>
 
-    <!-- Right: Media Details -->
-    <div class="flex-1 flex flex-col justify-between">
-      <router-link :to="`/media/detail/${media.id}`">
-        <h1 class="font-bold text-gray-800 mb-2 line-clamp-2">
-          {{ media.title }}
-        </h1>
-        <span>{{ media.user?.name }}</span>
-      </router-link>
-      <p class="text-gray-500 font-bold text-sm">
-        {{ media.views }} Views
-        <span class="pl-2 text-xs text-gray-500 font-bold">{{ timeAgo(media.created_at) }}</span>
+    <div class="flex-1 min-w-0">
+      <h3 class="text-sm text-gray-900 line-clamp-2 leading-tight group-hover:text-indigo-600">
+        {{ media.title }}
+      </h3>
+      
+      <p class="text-xs text-gray-600 mt-0.5">
+        {{ media.user?.name }}
+      </p>
+      
+      <p class="text-xs text-gray-500 mt-0.5">
+        {{ media.views.toLocaleString() }} Views 
+        <span class="text-gray-400">•</span>
+        {{ timeAgo(media.created_at) }}
       </p>
     </div>
-  </div>
-
-  <!-- Loading / Error -->
-  <div v-else-if="loading" class="text-gray-500">Loading media...</div>
-  <div v-else class="text-red-500">Media not found.</div>
+  </router-link>
 </template>
 
 <script setup>
-import { getFileUrl, timeAgo } from '@/utils/helpers';
-import AudioPlayCard from './AudioPlayCard.vue';
-import ActionMenu from './ActionMenu.vue';
+import { formatDuration, getFileUrl, timeAgo } from '@/utils/helpers';
 
+// Props definition for this small card
 defineProps({
   media: {
     type: Object,

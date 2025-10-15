@@ -3,7 +3,7 @@
         'relative w-full h-full bg-cover bg-center rounded-lg overflow-hidden transition-all duration-500',
         isPlaying ? 'animate-glow' : ''
     ]" :style="{ backgroundImage: `url(${getFileUrl(thumbnail_url)})` }">
-        <audio :src="getFileUrl(file_url)" controls @play="handlePlay" @pause="handlePause"
+        <audio :src="getFileUrl(file_url)" :controls="showControls" @play="handlePlay" @pause="handlePause"
             class="absolute bottom-0 left-0 w-full bg-white/80 backdrop-blur-sm"></audio>
     </div>
 </template>
@@ -16,7 +16,11 @@ import { ref } from 'vue'
 // Props to accept data dynamically
 const props = defineProps({
     thumbnail_url: String,
-    file_url: String
+    file_url: String,
+    showControls: {
+      type: Boolean,
+      default: false
+    }
 })
 
 // Local state
@@ -84,6 +88,6 @@ const handlePause = () => {
 }
 
 .animate-glow:hover {
-  transform: scale(1.05);
+  transform: scale(1.01);
 }
 </style>

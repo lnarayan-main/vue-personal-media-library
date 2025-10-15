@@ -20,8 +20,9 @@
             :media="media" 
           />
           <div v-else-if="media.media_type === 'audio'"
-            class="aspect-video flex items-center justify-center">
-            <AudioPlayCard :thumbnail_url="media.thumbnail_url" :file_url="media.file_url" :showControls="true" />
+            class=" flex items-center justify-center">
+            <!-- <AudioPlayCard :thumbnail_url="media.thumbnail_url" :file_url="media.file_url" :showControls="true" /> -->
+            <AudioPlayer :hls_path="media.hls_path" :thumbnail_url="getFileUrl(media.thumbnail_url)"  />
           </div>
           <div v-else class="aspect-video text-gray-500 p-8 text-center bg-gray-900">Unsupported media type</div>
         </div>
@@ -34,7 +35,9 @@
           
           <div class="flex items-center gap-4 mb-3 sm:mb-0">
             <div class="flex items-center gap-3">
-              <ProfilePic :url="media.user?.profile_pic_url" class="w-10 h-10 rounded-full border border-gray-200 flex-shrink-0" />
+                <router-link :to="`/user-profile/${media.user?.id}`">
+                    <ProfilePic :url="media.user?.profile_pic_url" class="w-10 h-10 rounded-full border border-gray-200 flex-shrink-0" />
+                </router-link>
               <div>
                 <p class="font-bold text-gray-900 leading-none hover:text-indigo-600 transition">
                   {{ media.user.name }}
@@ -122,7 +125,6 @@
 
 
 <script setup>
-// ... (script setup remains largely the same, but imports are crucial)
 import { ref, onMounted, computed } from "vue";
 import { useRoute } from "vue-router";
 import router from "@/router";
@@ -134,6 +136,7 @@ import Comments from "@/components/Comments.vue";
 import CategoryMediaCard from "@/components/CategoryMediaCard.vue";
 import ProfilePic from "@/components/ProfilePic.vue";
 import VideoPlayer from "@/components/VideoPlayer.vue";
+import AudioPlayer from "@/components/AudioPlayer.vue";
 
 const route = useRoute();
 const media = ref(null);

@@ -27,6 +27,7 @@ import PrivacyPolicy from "../pages/PrivacyPolicy.vue";
 import TermsOfService from "../pages/TermsOfService.vue";
 import ContactUs from "../pages/ContactUs.vue";
 import ChangePassword from '@/pages/ChangePassword.vue'
+import UserProfile from '@/pages/UserProfile.vue'
 
 
 const routes = [
@@ -81,6 +82,8 @@ const routes = [
     props: true,
     meta: { requiresAuth: true },
   },
+
+  {path: "/user-profile/:id", name: "UserProfile", component: UserProfile, props: true},
 
   { path: "/privacy", name: "privacy", component: PrivacyPolicy },
   { path: "/terms", name: "terms", component: TermsOfService },

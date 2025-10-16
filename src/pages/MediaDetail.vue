@@ -1,8 +1,9 @@
 <template>
   <div class="min-h-screen bg-white md:bg-gray-50 px-4 py-6 md:p-8">
-
-    <div v-if="loading" class="text-gray-500 mt-10 text-center text-lg">
-      <i class="fas fa-spinner fa-spin mr-2"></i> Loading media details...
+    
+    <div v-if="loading" class="text-gray-500 mt-10 text-center text-lg flex justify-center items-center gap-2">
+      <ArrowPathIcon class="h-6 w-6 animate-spin text-gray-400" />
+      Loading media details...
     </div>
 
     <div v-else-if="!media" class="text-red-500 mt-10 text-center text-lg font-semibold">
@@ -43,13 +44,17 @@
                   {{ media.user.name }}
                 </p>
                 <p class="text-xs text-gray-500 mt-0.5">
-                  {{ media.user?.subscribers ? media.user.subscribers.toLocaleString() + ' Subscribers' : '' }}
+                  {{ media.user?.subscribers ? media.user.subscribers.length.toLocaleString() + ' Subscribers' : '' }}
                 </p>
               </div>
             </div>
-
-            <button class="px-5 py-2 bg-red-600 text-white rounded-full font-semibold text-sm shadow hover:bg-red-700 transition flex-shrink-0">
-              <i class="fas fa-bell mr-1"></i> Subscribe
+            <button 
+              @click="handleSubscribe"
+              :disabled="subscriptionStore.loading"
+              class="flex px-4 py-2 rounded-full font-semibold transition hover:cursor-pointer text-sm"
+              :class="isSubscribed ? 'bg-gray-600 text-white' : 'bg-red-600 text-white hover:bg-red-700'">
+              <component :is="isSubscribed ? BellAlertIcon : BellIcon" class="h-5 w-5 inline-block mr-2"/>
+              {{ isSubscribed ? 'Subscribed' : 'Subscribe' }}
             </button>
           </div>
           
@@ -63,23 +68,23 @@
         <div class="bg-gray-100 rounded-xl p-4 mt-4 text-sm hover:bg-gray-180 transition duration-300">
           <div class="flex flex-wrap items-center gap-x-6 gap-y-2 font-medium mb-3 border-b border-gray-200 pb-2">
             
-            <p class="text-gray-700">
-              <i class="fas fa-eye text-gray-500 mr-1"></i>
+            <p class="text-gray-700 flex">
+              <EyeIcon class="w-5 h-5 text-gray-500 mr-1"/>
               {{ media.views.toLocaleString() }} Views
             </p>
-            <p class="text-gray-700">
-              <i class="fas fa-calendar-alt text-gray-500 mr-1"></i>
+            <p class="text-gray-700 flex">
+              <CalendarIcon class="w-5 h-5 text-gray-500 mr-1"/>
               {{ new Date(media.created_at).toLocaleDateString(undefined, {
                 month: 'short', day: 'numeric', year: 'numeric'
               }) }} ({{ timeAgo(media.created_at) }})
             </p>
             
-            <p class="text-indigo-700 font-bold sm:ml-auto">
-              <i class="fas fa-tag mr-1"></i>
+            <p class="text-indigo-700 font-bold sm:ml-auto flex">
+              <TagIcon class="w-5 h-5 mr-1"/>
               {{ media.category?.name || "Uncategorized" }}
             </p>
-            <p class="text-gray-700 sm:pr-0">
-              <i class="fas fa-file-alt text-gray-500 mr-1"></i>
+            <p class="text-gray-700 sm:pr-0 flex">
+              <FilmIcon class="w-5 h-5 text-gray-500 mr-1"/>
               Type: {{ media.media_type }}
             </p>
           </div>
@@ -139,6 +144,8 @@ import CategoryMediaCard from "@/components/CategoryMediaCard.vue";
 import ProfilePic from "@/components/ProfilePic.vue";
 import VideoPlayer from "@/components/VideoPlayer.vue";
 import AudioPlayer from "@/components/AudioPlayer.vue";
+import { ArrowPathIcon, BellAlertIcon, BellIcon, CalendarIcon, EyeIcon, FilmIcon, TagIcon } from "@heroicons/vue/20/solid";
+import { useSubscriptionStore } from "@/stores/subscription";
 
 const route = useRoute();
 const media = ref(null);
@@ -148,12 +155,23 @@ const selectedCategory = ref(null);
 const categories = ref([]);
 const isSeeMore = ref(true);
 
+const isSubscribed = ref(false)
+
+const subscriptionStore = useSubscriptionStore();
+
+const handleSubscribe = async () => {
+  await subscriptionStore.toggleSubscription(media.value.user, (updatedUser) => {
+    isSubscribed.value = subscriptionStore.isSubscribedTo(updatedUser)
+  })
+}
+
 
 async function fetchMedia() {
   try {
     const id = route.params.id;
     const res = await axiosApi.get(`media/${id}/details`);
     media.value = res.data.media;
+    isSubscribed.value = subscriptionStore.isSubscribedTo(media.value?.user);
   } catch (err) {
     console.error("Failed to fetch media", err);
   } finally {

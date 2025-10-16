@@ -7,14 +7,34 @@
     <div v-else class="max-w-8xl mx-auto bg-white shadow-xl rounded-lg overflow-hidden">
 
       <header class="relative">
-        <div 
+         <div
           :style="{ backgroundImage: user.banner_url ? `url(${getFileUrl(user.banner_url)})` : 'none' }"
           :class="[
-            'w-full h-48 bg-gray-800 bg-cover bg-center',
+            'w-full h-48 bg-gray-800 bg-cover bg-center rounded-xl relative overflow-hidden',
             { 'bg-indigo-600': !user.banner_url }
           ]"
         >
-          <div class="absolute inset-0 bg-black opacity-10"></div>
+          <!-- subtle dark overlay -->
+          <div class="absolute inset-0 bg-black/20"></div>
+
+          <!-- floating pencil button -->
+          <button
+            @click="onEditBanner"
+            class="absolute bottom-3 right-3 bg-white/90 hover:bg-indigo-600 text-indigo-700 hover:text-white hover:cursor-pointer
+                  rounded-full p-2 shadow-md transition-all duration-300"
+            title="Edit banner"
+          >
+            <PencilSquareIcon class="h-5 w-5" />
+          </button>
+
+          <input
+            type="file"
+            ref="bannerInput"
+            class="hidden"
+            accept="image/*"
+            @change="handleBannerChange"
+          />
+
         </div>
 
         <div class="p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center -mt-16 md:-mt-12 relative z-10">
@@ -30,13 +50,15 @@
               <p class="text-gray-600 mt-1">@{{ user.email }}</p>
               <p class="text-sm text-gray-500 mt-1 font-medium flex">
                 <UsersIcon class="h-5 w-5 mr-2"/>
-                {{ user.subscribers ? user.subscribers.toLocaleString() : 0 }} Subscribers
+                {{ user.subscribers ? user.subscribers.length.toLocaleString() : 0 }} Subscribers
               </p>
             </div>
 
             <div class="flex gap-3 mt-4 sm:mt-0">
-              <button class="flex px-6 py-2 bg-red-600 text-white rounded-full font-semibold shadow hover:bg-red-700 transition">
-                <BellAlertIcon class="h-5 w-5 mr-2"/> Subscribe
+              <button @click="handleclickToSubscribe" class="flex px-6 py-2 text-white rounded-full font-semibold shadow transition"
+              :class="isSubscribed ? 'bg-gray-600 text-white hover:bg-gray-700' : 'bg-red-600 text-white hover:bg-red-700'">
+                <component :is="isSubscribed ? BellAlertIcon : BellIcon" class="h-5 w-5 inline-block mr-2"/>
+                {{ isSubscribed ? 'Subscribed' : 'Subscribe' }}
               </button>
               <button v-if="!isOwner" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-full font-semibold hover:bg-gray-300 transition">
                 <EllipsisHorizontalIcon class="h-5 w-5" />
@@ -148,8 +170,9 @@ import axiosApi from '@/utils/axiosApi';
 import { getFileUrl } from '@/utils/helpers';
 import MediaCard from '@/components/MediaCard.vue'; // The grid card component
 import ProfilePic from '@/components/ProfilePic.vue';
-import { ArrowUpTrayIcon, BellAlertIcon, BellIcon, CalendarIcon, ChartBarIcon, EllipsisHorizontalIcon, UsersIcon, VideoCameraIcon } from '@heroicons/vue/20/solid';
+import { ArrowUpTrayIcon, BellAlertIcon, BellIcon, CalendarIcon, ChartBarIcon, EllipsisHorizontalIcon, PencilIcon, PencilSquareIcon, UsersIcon, VideoCameraIcon } from '@heroicons/vue/20/solid';
 import { useAuthStore } from '@/stores/auth';
+import notify from '@/utils/notify';
 
 const auth = useAuthStore();
 
@@ -158,17 +181,13 @@ const user = ref(null);
 const mediaList = ref([]);
 const loading = ref(true);
 const activeTab = ref('all');
-// const isOwner = ref(false); 
+const isSubscribed = ref(false);
+const bannerInput = ref(null);
 
-const isOwner = computed(()=>{
-  if (auth && auth.isLoggedIn){
-    if (auth.currentUser.id == user.value.id){
-      return true;
-    }
-    return false;
-  }
-  return false;
-})
+const isOwner = computed(() =>
+  auth?.isLoggedIn &&
+  auth?.currentUser?.id === user.value?.id
+);
 
 
 
@@ -208,6 +227,10 @@ async function fetchUserProfile() {
     
     user.value = userRes.data;
     mediaList.value = mediaRes.data;
+
+    isSubscribed.value = user.value.subscribers?.some(
+      sub => sub.subscriber_id === auth.currentUser?.id
+    ) ?? false;
     
     
   } catch (err) {
@@ -216,6 +239,43 @@ async function fetchUserProfile() {
   } finally {
     loading.value = false;
   }
+}
+
+const handleclickToSubscribe = async() => {
+  try {
+    if(isOwner.value){
+      notify.info("You cannot subscribe yourself!")
+      return;
+    }
+    const userId = user.value?.id;
+    const res = await axiosApi.post(`user/${userId}/subscribe`)
+    notify.success(res.data?.message);
+
+    if (isSubscribed.value) {
+      // Unsubscribe
+      user.value.subscribers = user.value.subscribers.filter(
+        sub => sub.subscriber_id !== auth.currentUser?.id
+      );
+      isSubscribed.value = false;
+    } else {
+      // Subscribe
+      user.value.subscribers.push({
+        creator_id: user.value.id,
+        subscriber_id: auth.currentUser?.id
+      });
+      isSubscribed.value = true;
+    }
+    
+  } catch (err) {
+    console.error("Error in subscription: ", err);
+    const errMsg = err.response?.data?.detail || "Something went wrong, try again later!"
+    notify.error(errMsg);
+  }
+}
+
+const onEditBanner = () => {
+  bannerInput.value.click()
+  console.log("Clicked");
 }
 
 onMounted(() => {

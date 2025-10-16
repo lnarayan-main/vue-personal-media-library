@@ -34,6 +34,15 @@
       </button>
     </div>
 
+     <!-- Loader -->
+    <CustomLoader v-if="loading" :text_content="'Loading media...'"/>
+
+    <!-- Empty State -->
+    <div v-else-if="filteredMedia.length === 0" class="text-gray-500 mt-10 text-center text-lg flex flex-col items-center">
+      <PhotoIcon class="h-10 w-10 mb-3 text-gray-400" />
+      <p>No media found in this category.</p>
+    </div>
+
     <!-- Media Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
       <MediaCard
@@ -56,6 +65,7 @@
 </template>
 
 <script setup>
+import CustomLoader from "@/components/CustomLoader.vue";
 import DeleteConfirmModal from "@/components/DeleteConfirmModal.vue";
 import HeroSection from "@/components/HeroSection.vue";
 import MediaCard from "@/components/MediaCard.vue";
@@ -71,6 +81,7 @@ const mediaItems = ref([]);
 const categories = ref([]);
 const selectedCategory = ref(null);
 const BASE_URL = import.meta.env.VITE_API_URL;
+const loading = ref(false);
 
 const showDeleteModal = ref(false)
 const mediaToDelete = ref(null)
@@ -107,10 +118,13 @@ async function confirmDelete() {
 // Fetch all media items
 async function fetchMedia() {
   try {
+    loading.value = true;
     const res = await axiosApi.get("media/lists");
     mediaItems.value = await res.data;
   } catch (err) {
     console.error("Failed to fetch media items", err);
+  } finally {
+    loading.value = false;
   }
 }
 

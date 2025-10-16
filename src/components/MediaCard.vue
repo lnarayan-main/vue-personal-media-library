@@ -39,21 +39,32 @@
                 </p>
             </router-link>
 
-            <p class="text-xs text-gray-500 mt-2 flex items-center">
-                <span class="font-medium">{{ media.views ? media.views.toLocaleString() : 0 }} Views</span>
-                <span class="mx-2 text-gray-300">•</span>
-                <span>{{ media.created_at ? timeAgo(media.created_at) : '' }}</span>
+            <p class="text-xs text-gray-500 mt-2 flex items-center justify-between">
+                <!-- Wrap the data spans in a div to treat them as a single unit -->
+                <div class="flex items-center">
+                    <span class="font-medium">{{ media.views ? media.views.toLocaleString() : 0 }} Views</span>
+                    <span class="mx-2 text-gray-300">•</span>
+                    <span>{{ media.created_at ? timeAgo(media.created_at) : '' }}</span>
+                </div>
+                
+                <ListActionMenu 
+                    :type="type" 
+                    :media_id="media_id" 
+                    @delete-media="$emit('delete-media', $event)"
+                    :owner_id="media.owner_id" 
+                    :auth_user="auth_user" 
+                />
             </p>
 
             <!-- <div class="mt-3 pt-3 border-t border-gray-100">
-        <ActionMenu 
-          :type="type" 
-          :media_id="media_id" 
-          @delete-media="$emit('delete-media', $event)"
-          :owner_id="media.owner_id" 
-          :auth_user="auth_user" 
-        />
-      </div> -->
+                <ListActionMenu 
+                :type="type" 
+                :media_id="media_id" 
+                @delete-media="$emit('delete-media', $event)"
+                :owner_id="media.owner_id" 
+                :auth_user="auth_user" 
+                />
+            </div> -->
         </div>
     </div>
 </template>
@@ -62,6 +73,7 @@
 import { formatDuration, getFileUrl, timeAgo } from '@/utils/helpers';
 import AudioPlayCard from './AudioPlayCard.vue';
 import ActionMenu from './ActionMenu.vue';
+import ListActionMenu from './ListActionMenu.vue';
 
 const BASE_URL = import.meta.env.VITE_API_URL;
 

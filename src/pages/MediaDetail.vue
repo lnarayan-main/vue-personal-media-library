@@ -27,7 +27,7 @@
           <div v-else class="aspect-video text-gray-500 p-8 text-center bg-gray-900">Unsupported media type</div>
         </div>
         
-        <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900 mt-5 mb-3">
+        <h1 class="font-bold text-gray-600 mt-5 mb-3 line-clamp-2">
           {{ media.title }}
         </h1>
         
@@ -60,7 +60,7 @@
           </div>
         </div>
         
-        <div class="bg-gray-100 rounded-xl p-4 mt-4 text-sm hover:bg-gray-200 transition duration-300">
+        <div class="bg-gray-100 rounded-xl p-4 mt-4 text-sm hover:bg-gray-180 transition duration-300">
           <div class="flex flex-wrap items-center gap-x-6 gap-y-2 font-medium mb-3 border-b border-gray-200 pb-2">
             
             <p class="text-gray-700">
@@ -84,9 +84,11 @@
             </p>
           </div>
 
-          <p class="text-gray-700 leading-relaxed whitespace-pre-line text-base line-clamp-4 hover:line-clamp-none cursor-pointer">
+          <p class="text-gray-700 leading-relaxed whitespace-pre-line text-base line-clamp-2 hover:cursor-pointer mb-2" :class="!isSeeMore ? 'line-clamp-none' : ''">
             {{ media.description }}
           </p>
+            <span v-if="isSeeMore" @click="isSeeMore = !isSeeMore" class="p-2 font-bold hover:cursor-pointer">see more</span>
+            <span v-else @click="isSeeMore = !isSeeMore" class="p-2 font-bold hover:cursor-pointer">see less</span>
         </div>
 
         <div class="mt-8 border-t border-gray-200 pt-6">
@@ -144,6 +146,7 @@ const items = ref([]);
 const loading = ref(true);
 const selectedCategory = ref(null);
 const categories = ref([]);
+const isSeeMore = ref(true);
 
 
 async function fetchMedia() {

@@ -1,5 +1,5 @@
 <template>
-    <div class="flex justify-center mt-8">
+    <div class="flex justify-center">
         <video ref="videoRef" controls class="rounded-lg shadow-lg w-full object-contain"></video>
     </div>
 </template>

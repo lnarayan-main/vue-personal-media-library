@@ -6,7 +6,19 @@
 
     <div class="flex">
       <!-- Sidebar -->
-      <Sidebar v-if="auth.isLoggedIn && isSideBarOpen" />
+      <!-- <Sidebar v-if="auth.isLoggedIn && isSideBarOpen" /> -->
+
+      <Sidebar
+        v-if="auth.isLoggedIn"
+        :is-open="isSideBarOpen"
+        @close="isSideBarOpen = false"
+      />
+
+      <div
+        v-if="isSideBarOpen && isMobile"
+        class="fixed inset-0 bg-black bg-opacity-40 z-40"
+        @click="isSideBarOpen = false"
+      ></div>
 
       <!-- Main content -->
       <main class="flex-1 p-8">
@@ -20,7 +32,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { onMounted, onUnmounted, ref } from "vue";
 import Footer from "./components/Footer.vue";
 import Navbar from "./components/Navbar.vue";
 import Sidebar from "./components/Sidebar.vue";
@@ -33,6 +45,24 @@ const isSideBarOpen = ref(true);
 function toggleSidebar(){
   isSideBarOpen.value = !isSideBarOpen.value;
 }
+
+const isMobile = ref(false);
+
+function checkScreen() {
+  isMobile.value = window.innerWidth < 768; 
+  if (!isMobile.value) {
+    isSideBarOpen.value = true; 
+  }
+}
+
+onMounted(() => {
+  checkScreen();
+  window.addEventListener("resize", checkScreen);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("resize", checkScreen);
+});
 
 
 </script>

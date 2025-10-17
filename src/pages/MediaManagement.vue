@@ -192,6 +192,9 @@ onMounted(fetchMedia);
                             Description</th>
                         <th
                             class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-24">
+                            Views</th>
+                        <th
+                            class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-24">
                             Status</th>
                         <th
                             class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-32">
@@ -200,18 +203,16 @@ onMounted(fetchMedia);
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     <tr v-for="(media, i) in items" :key="i" class="hover:bg-indigo-50/50 transition duration-100">
-                        <!-- S.N. -->
                         <td class="px-4 py-3 text-sm text-gray-700">{{ i + 1 }}</td>
 
-                        <!-- Name -->
                         <td class="px-4 py-3 text-sm font-medium text-gray-800"><img
                                 :src="getFileUrl(media.thumbnail_url)" class="w-15 h-15 object-cover" alt="Thumbnail"></td>
-                        <td class="px-4 py-3 text-sm font-medium text-gray-800">{{ media.title }}</td>
+                        <td class="px-4 py-3 text-sm font-medium text-gray-800 truncate max-w-[200px]" :title="media.title">{{ media.title }}</td>
 
-                        <!-- Email -->
-                        <td class="px-4 py-3 text-sm text-gray-600">{{ media.description }}</td>
+                        <td class="px-4 py-3 text-sm text-gray-600 truncate max-w-[300px]" :title="media.description">{{ media.description }}</td>
+                        
+                        <td class="px-4 py-3 text-sm text-gray-600">{{ media.views }}</td>
 
-                        <!-- Status -->
                         <td class="px-4 py-3">
                             <select v-model="media.status" @change="onChangeStatus" :data-id="media.id">
                                 <option value="ACTIVE">Active</option>

@@ -8,33 +8,37 @@
 
       <header class="relative">
          <div
-          :style="{ backgroundImage: user.banner_url ? `url(${getFileUrl(user.banner_url)})` : 'none' }"
+            :style="{
+              backgroundImage: previewBannerUrl
+                ? `url(${previewBannerUrl})` 
+                : user.background_pic_url
+                  ? `url(${getFileUrl(user.background_pic_url)})`
+                  : 'none',
+            }"
           :class="[
-            'w-full h-48 bg-gray-800 bg-cover bg-center rounded-xl relative overflow-hidden',
+            'w-full h-48 bg-gray-800 bg-cover bg-center rounded-xl overflow-hidden relative',
             { 'bg-indigo-600': !user.banner_url }
           ]"
         >
-          <!-- subtle dark overlay -->
-          <div class="absolute inset-0 bg-black/20"></div>
+          <!-- The dark overlay -->
+          <div class="absolute inset-0 bg-black opacity-10 pointer-events-none"></div>
 
-          <!-- floating pencil button -->
-          <button
-            @click="onEditBanner"
-            class="absolute bottom-3 right-3 bg-white/90 hover:bg-indigo-600 text-indigo-700 hover:text-white hover:cursor-pointer
-                  rounded-full p-2 shadow-md transition-all duration-300"
-            title="Edit banner"
-          >
-            <PencilSquareIcon class="h-5 w-5" />
-          </button>
-
+          <!-- Hidden file input -->
           <input
             type="file"
+            accept="image/*"
             ref="bannerInput"
             class="hidden"
-            accept="image/*"
             @change="handleBannerChange"
           />
 
+          <!-- Floating pencil button -->
+          <button v-if="isOwner"
+            @click="onEditBanner"
+            class="absolute bottom-3 right-3 z-20 bg-white text-gray-800 p-2 rounded-full shadow-md hover:bg-gray-100 transition"
+          >
+            <PencilSquareIcon class="h-5 w-5" />
+          </button>
         </div>
 
         <div class="p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center -mt-16 md:-mt-12 relative z-10">
@@ -182,7 +186,20 @@ const mediaList = ref([]);
 const loading = ref(true);
 const activeTab = ref('all');
 const isSubscribed = ref(false);
+
 const bannerInput = ref(null);
+const isUploadDisabled = ref(true);
+const validationError = ref(null);
+const MAX_FILE_SIZE_MB = 2;
+const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+const ALLOWED_MIME_TYPES = [
+    'image/jpeg',   
+    'image/png',   
+    'image/gif',   
+    'image/webp',
+];
+
+const previewBannerUrl = ref(null);
 
 const isOwner = computed(() =>
   auth?.isLoggedIn &&
@@ -275,7 +292,54 @@ const handleclickToSubscribe = async() => {
 
 const onEditBanner = () => {
   bannerInput.value.click()
-  console.log("Clicked");
+}
+
+const handleBannerChange = async (event) => {
+  validationError.value = null;
+  isUploadDisabled.value = true;
+
+  const file = event.target.files[0];
+  if(!file) return;
+
+  if (file.size > MAX_FILE_SIZE_BYTES){
+    notify.error(`File is too large. Max size is ${MAX_FILE_SIZE_MB}MB.`);
+    event.target.value = '';
+    return;
+  }
+
+  if(!ALLOWED_MIME_TYPES.includes(file.type)){
+    console.log(file.type);
+    notify.error(`Unsupported file type: ${file.type}. Please upload image files only (jpg, jpeg, png, gif, webp)`)
+    event.target.value = '';
+    return;
+  }
+
+  isUploadDisabled.value = false;
+
+  previewBannerUrl.value = URL.createObjectURL(file)
+
+  try {
+    const userId = user.value?.id;
+    const fd = new FormData();
+    fd.append('bg_file', file);
+    const res = await axiosApi.post(`user/${userId}/bg-profile-update`, fd, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+      });
+    notify.success(res.data?.message);
+    console.log(res.data.bg_pic_url);
+    user.value.background_pic_url = res.data?.bg_pic_url;
+    previewBannerUrl.value = null
+  } catch (err) {
+    console.error(err);
+    const errMsg = err.response?.data?.detail || "Something went wrong, try again later!";
+    notify.error(errMsg);
+  } finally {
+    isUploadDisabled.value = true;
+  }
+
+
 }
 
 onMounted(() => {

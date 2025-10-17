@@ -70,7 +70,9 @@ import DeleteConfirmModal from "@/components/DeleteConfirmModal.vue";
 import MediaCard from "@/components/MediaCard.vue";
 import { useAuthStore } from "@/stores/auth";
 import axiosApi from "@/utils/axiosApi";
+import { getFileUrl } from "@/utils/helpers";
 import notify from "@/utils/notify";
+import { PhotoIcon } from "@heroicons/vue/20/solid";
 import { ref, onMounted, computed } from "vue";
 const auth = useAuthStore();
 

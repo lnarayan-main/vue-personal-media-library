@@ -40,9 +40,11 @@
                     <ProfilePic :url="media.user?.profile_pic_url" class="w-10 h-10 rounded-full border border-gray-200 flex-shrink-0" />
                 </router-link>
               <div>
-                <p class="font-bold text-gray-900 leading-none hover:text-indigo-600 transition">
-                  {{ media.user.name }}
-                </p>
+                <router-link :to="`/user-profile/${media.user?.id}`">
+                  <p class="font-bold text-gray-900 leading-none hover:text-indigo-600 transition">
+                    {{ media.user.name }}
+                  </p>
+                </router-link>
                 <p class="text-xs text-gray-500 mt-0.5">
                   {{ media.user?.subscribers ? media.user.subscribers.length.toLocaleString() + ' Subscribers' : '' }}
                 </p>

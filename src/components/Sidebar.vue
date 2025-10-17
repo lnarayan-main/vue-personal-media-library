@@ -1,65 +1,78 @@
 <template>
-  <aside class="bg-gray-100 w-64 min-h-screen shadow-md p-5 hidden md:block">
-    <!-- <h2 class="text-xl font-bold text-indigo-600 mb-6">Dashboard</h2> -->
+  <aside class="bg-gray-800 w-60 min-h-screen shadow-2xl p-4 hidden md:block transition-all duration-300">
+    
+    <!-- <div class="mb-8 mt-2">
+      <h1 class="text-2xl font-extrabold text-indigo-400 tracking-wider">MediaHub</h1>
+      <p class="text-xs text-gray-500 mt-1">System Admin</p>
+    </div> -->
 
-    <nav class="flex flex-col space-y-3">
+    <nav class="flex flex-col space-y-2">
+      
+      <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mt-4 mb-1">General</p>
+
       <router-link to="/dashboard" :class="[
-        'flex text-gray-700 hover:text-indigo-600 font-medium',
+        'flex items-center py-2 px-3 rounded-lg font-semibold transition duration-200 ease-in-out',
         route.path.startsWith('/dashboard')
-          ? 'text-indigo-600'
-          : 'text-gray-700'
+          ? 'bg-indigo-600 text-white shadow-md'
+          : 'text-gray-300 hover:bg-gray-700 hover:text-white'
       ]">
-        <HomeIcon class="h-5 w-5 mr-2" />
+        <HomeIcon class="h-5 w-5 mr-3" />
         Dashboard
       </router-link>
 
       <router-link v-if="auth.isUser" to="/media" :class="[
-        'flex text-gray-700 hover:text-indigo-600 font-medium',
+        'flex items-center py-2 px-3 rounded-lg font-semibold transition duration-200 ease-in-out',
         route.path.startsWith('/media')
-          ? 'text-indigo-600'
-          : 'text-gray-700'
+          ? 'bg-indigo-600 text-white shadow-md'
+          : 'text-gray-300 hover:bg-gray-700 hover:text-white'
       ]">
-        <FilmIcon class="h-5 w-5 mr-2" />
+        <FilmIcon class="h-5 w-5 mr-3" />
         My Media
       </router-link>
+      
+      <template v-if="auth.isAdmin">
+        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider pt-6 pb-1 border-t border-gray-700">Administration</p>
 
-      <router-link v-if="auth.isAdmin" to="/users-list" :class="[
-        'flex text-gray-700 hover:text-indigo-600 font-medium',
-        route.path.startsWith('/users-list')
-          ? 'text-indigo-600'
-          : 'text-gray-700'
-      ]">
-        <UsersIcon class="h-5 w-5 mr-2" />
-        User Management
-      </router-link>
+        <router-link to="/users-list" :class="[
+          'flex items-center py-2 px-3 rounded-lg font-semibold transition duration-200 ease-in-out',
+          route.path.startsWith('/users-list')
+            ? 'bg-indigo-600 text-white shadow-md'
+            : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+        ]">
+          <UsersIcon class="h-5 w-5 mr-3" />
+          User Management
+        </router-link>
 
-      <router-link v-if="auth.isAdmin" to="/media-list" :class="[
-        'flex text-gray-700 hover:text-indigo-600 font-medium',
-        route.path.startsWith('/media-list')
-          ? 'text-indigo-600'
-          : 'text-gray-700'
-      ]">
-        <FilmIcon class="h-5 w-5 mr-2" />
-        Media Management
-      </router-link>
+        <router-link to="/media-list" :class="[
+          'flex items-center py-2 px-3 rounded-lg font-semibold transition duration-200 ease-in-out',
+          route.path.startsWith('/media-list')
+            ? 'bg-indigo-600 text-white shadow-md'
+            : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+        ]">
+          <FilmIcon class="h-5 w-5 mr-3" />
+          Media Management
+        </router-link>
 
-      <router-link v-if="auth.isAdmin" to="/categories" :class="[
-        'flex text-gray-700 hover:text-indigo-600 font-medium',
-        route.path.startsWith('/categories')
-          ? 'text-indigo-600'
-          : 'text-gray-700'
-      ]">
-        <TagIcon class="h-5 w-5 mr-2" />
-        Category Management
-      </router-link>
+        <router-link to="/categories" :class="[
+          'flex items-center py-2 px-3 rounded-lg font-semibold transition duration-200 ease-in-out',
+          route.path.startsWith('/categories')
+            ? 'bg-indigo-600 text-white shadow-md'
+            : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+        ]">
+          <TagIcon class="h-5 w-5 mr-3" />
+          Category Management
+        </router-link>
+      </template>
+      
+      <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider pt-6 pb-1 border-t border-gray-700">Account</p>
 
       <router-link to="/profile" :class="[
-        'flex text-gray-700 hover:text-indigo-600 font-medium',
+        'flex items-center py-2 px-3 rounded-lg font-semibold transition duration-200 ease-in-out',
         route.path.startsWith('/profile')
-          ? 'text-indigo-600'
-          : 'text-gray-700'
+          ? 'bg-indigo-600 text-white shadow-md'
+          : 'text-gray-300 hover:bg-gray-700 hover:text-white'
       ]">
-        <UserCircleIcon class="h-5 w-5 mr-2" />
+        <UserCircleIcon class="h-5 w-5 mr-3" />
         Manage Profile
       </router-link>
 
@@ -72,15 +85,13 @@ import { useAuthStore } from '@/stores/auth';
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 import {
-  HomeIcon,         // For Dashboard
-  UsersIcon,        // For User Management
-  FilmIcon,         // For Media Management
-  TagIcon,          // For Category Management
-  UserCircleIcon    // For Manage Profile
-} from '@heroicons/vue/20/solid';
+  HomeIcon,         
+  UsersIcon,        
+  FilmIcon,         
+  TagIcon,          
+  UserCircleIcon    
+} from '@heroicons/vue/20/solid'; 
 
 const auth = useAuthStore();
 const route = useRoute();
-
-
 </script>

@@ -5,6 +5,7 @@
 </template>
 
 <script setup>
+import config from "@/config";
 import Hls from "hls.js";
 import Plyr from "plyr";
 import "plyr/dist/plyr.css";
@@ -15,7 +16,7 @@ const props = defineProps({
 });
 
 const videoRef = ref(null);
-const apiBase = import.meta.env.VITE_API_URL || "http://localhost:8000";
+const apiBase = config.API_BASE_URL;
 
 onMounted(() => {
     const video = videoRef.value;

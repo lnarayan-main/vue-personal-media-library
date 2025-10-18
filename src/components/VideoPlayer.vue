@@ -9,6 +9,7 @@ import { ref, onMounted, onBeforeUnmount } from 'vue'
 import Hls from 'hls.js'
 import Plyr from 'plyr'
 import 'plyr/dist/plyr.css'
+import config from '@/config'
 
 const props = defineProps({
   hls_path: String,
@@ -16,7 +17,7 @@ const props = defineProps({
 })
 
 const videoRef = ref(null)
-const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+const apiBase = config.API_BASE_URL;
 
 let hlsInstance = null
 let playerInstance = null

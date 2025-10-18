@@ -1,5 +1,7 @@
-const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL || 'http://localhost:8000/';
+import config from '@/config';
 import axios from 'axios';
+
+const BASE_URL = config.API_BASE_URL;
 
 const axiosApi = axios.create({
     baseURL: BASE_URL,

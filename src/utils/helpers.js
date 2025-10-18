@@ -1,7 +1,7 @@
-
-const BASE_URL = import.meta.env.VITE_APP_API_BASE_URL || 'http://localhost:8000/';
 import router from "@/router";
-import axiosApi from "./axiosApi";
+import config from "@/config";
+
+const BASE_URL = config.API_BASE_URL;
 
 export function getFileUrl(file_url){
     if (!file_url){

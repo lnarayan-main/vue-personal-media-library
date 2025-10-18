@@ -39,7 +39,7 @@
                 </p>
             </router-link>
 
-            <p class="text-xs text-gray-500 mt-2 flex items-center justify-between">
+            <div class="text-xs text-gray-500 mt-2 flex items-center justify-between">
                 <!-- Wrap the data spans in a div to treat them as a single unit -->
                 <div class="flex items-center">
                     <span class="font-medium">{{ media.views ? media.views.toLocaleString() : 0 }} Views</span>
@@ -54,7 +54,7 @@
                     :owner_id="media.owner_id" 
                     :auth_user="auth_user" 
                 />
-            </p>
+            </div>
 
             <!-- <div class="mt-3 pt-3 border-t border-gray-100">
                 <ListActionMenu 

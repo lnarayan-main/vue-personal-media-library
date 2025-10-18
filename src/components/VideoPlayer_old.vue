@@ -3,13 +3,14 @@
 </template>
 
 <script setup>
+import config from "@/config";
 import Hls from "hls.js";
 import { ref, onMounted } from "vue";
 
 const props = defineProps({
     hls_path: String,
 });
-const apiBase = import.meta.env.VITE_API_URL || "http://localhost:8000";
+const apiBase = config.API_BASE_URL;
 const videoRef = ref(null);
 
 onMounted(() => {

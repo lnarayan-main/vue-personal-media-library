@@ -1,6 +1,5 @@
-<!-- src/pages/Profile.vue -->
 <template>
-  <main class="flex-1 bg-gray-50 p-6">
+  <!-- <main class="flex-1 bg-gray-50 p-6"> -->
     <!-- Header: single card with avatar + basic info -->
     <div class="bg-white rounded-xl shadow-md p-6 mb-6 flex items-center gap-6">
       <img :src="getFileUrl(profile.profile_pic_url) || defaultAvatar" alt="{{ profile.name }}"
@@ -121,7 +120,7 @@
         </div>
       </form>
     </div>
-  </main>
+  <!-- </main> -->
 </template>
 
 <script setup>

@@ -1,5 +1,6 @@
 <template>
   <div class="p-6 bg-gray-100 min-h-screen">
+  <!-- <div class="bg-white rounded-xl shadow-md p-6"> -->
     <!-- Page Header -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
       <h1 class="text-3xl font-bold text-gray-800 mb-4 sm:mb-0">Categories</h1>

@@ -1,4 +1,3 @@
-<!-- src/pages/MediaList.vue -->
 <template>
   <div class="p-6 bg-gray-100 min-h-screen">
     <!-- Hero Section -->
@@ -19,7 +18,7 @@
     </div>
 
     <!-- Category Filter -->
-    <div class="mb-4 flex gap-2 overflow-x-auto">
+    <!-- <div class="mb-4 flex gap-2 overflow-x-auto">
       <button v-for="cat in categories" :key="cat.id" @click="selectedCategory = cat.id" :class="[
         'px-4 py-2 rounded-lg text-white',
         selectedCategory === cat.id ? 'bg-blue-600' : 'bg-gray-500 hover:bg-gray-600'
@@ -32,7 +31,44 @@
       ]">
         All
       </button>
-    </div>
+    </div> -->
+
+
+    <!-- Category Filter -->
+      <div class="mb-6">
+        <div
+          class="flex gap-2 overflow-x-auto pb-2 border-b border-gray-200"
+          style="scrollbar-width: thin; scrollbar-color: #9ca3af #f3f4f6;"
+        >
+          <button
+            v-for="cat in categories"
+            :key="cat.id"
+            @click="selectedCategory = cat.id"
+            :class="[
+              'flex-shrink-0 px-4 py-2 rounded-lg text-white font-medium transition',
+              selectedCategory === cat.id
+                ? 'bg-blue-600 shadow-md'
+                : 'bg-gray-500 hover:bg-gray-600'
+            ]"
+          >
+            {{ cat.name }}
+          </button>
+
+          <button
+            @click="selectedCategory = null"
+            :class="[
+              'flex-shrink-0 px-4 py-2 rounded-lg text-white font-medium transition',
+              selectedCategory === null
+                ? 'bg-blue-600 shadow-md'
+                : 'bg-gray-500 hover:bg-gray-600'
+            ]"
+          >
+            All
+          </button>
+        </div>
+      </div>
+
+
 
      <!-- Loader -->
     <CustomLoader v-if="loading" :text_content="'Loading media...'"/>
@@ -162,3 +198,25 @@ onMounted(() => {
   fetchMedia();
 });
 </script>
+
+<style scoped>
+/* For Chrome, Edge, Safari */
+::-webkit-scrollbar {
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #9ca3af;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #6b7280;
+}
+
+</style>

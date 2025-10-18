@@ -3,8 +3,9 @@
     <div class="flex items-center space-x-4">
       <Bars3Icon v-if="auth.isLoggedIn" @click="handleClick" class="h-8 w-8 hover:cursor-pointer"/>
       <!-- Logo -->
-      <router-link to="/" class="text-2xl font-bold text-indigo-600">
-        MediaHub
+      <router-link to="/" class="text-2xl font-bold text-indigo-600 flex gap-2">
+        <img src="/images/logo.png" class="h-15 w-15 items-center" alt="logo">
+        <!-- MediaHub  -->
       </router-link>
     </div>
 

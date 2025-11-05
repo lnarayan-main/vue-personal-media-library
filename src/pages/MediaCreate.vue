@@ -138,6 +138,12 @@
             Reset
           </button>
         </div>
+        <div v-if="uploading" class="progress-container">
+          <p>Uploading... {{ progress }}%</p>
+          <div class="progress-bar">
+            <div class="progress-fill" :style="{ width: progress + '%' }"></div>
+          </div>
+        </div>
       </form>
     </div>
   </main>
@@ -169,6 +175,9 @@ const mediaPreview = ref(null);
 // Refs for the hidden file inputs
 const mediaInput = ref(null);
 const thumbnailInput = ref(null);
+
+const progress = ref(0);
+const uploading = ref(false);
 
 
 const saving = ref(false);
@@ -240,6 +249,10 @@ async function submitForm() {
   }
 
   saving.value = true;
+
+  uploading.value = true;
+  progress.value = 0;
+
   try {
     const fd = new FormData();
     fd.append("title", form.value.title);
@@ -251,7 +264,11 @@ async function submitForm() {
     if (selectedThumbnail.value) fd.append("thumbnail", selectedThumbnail.value);
 
     const res = await axiosApi.post("media/create", fd, {
-      headers: { "Content-Type": "multipart/form-data" }
+      headers: { "Content-Type": "multipart/form-data" },
+       onUploadProgress(progressEvent) {
+        const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+        progress.value = percent;
+      }
     });
 
     message.value = { text: "Media created successfully!", type: "success" };
@@ -262,6 +279,7 @@ async function submitForm() {
     message.value = { text: err.response?.data?.detail || "Failed to create media.", type: "error" };
   } finally {
     saving.value = false;
+    uploading.value = false;
   }
 }
 
@@ -269,3 +287,23 @@ onMounted(() => {
   fetchCategories();
 });
 </script>
+
+
+<style scoped>
+.progress-container {
+  width: 100%;
+  margin-top: 10px;
+}
+.progress-bar {
+  width: 100%;
+  height: 10px;
+  background-color: #eee;
+  border-radius: 5px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background-color: #4caf50;
+  transition: width 0.2s ease;
+}
+</style>

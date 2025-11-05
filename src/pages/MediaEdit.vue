@@ -70,7 +70,7 @@
             <input type="file" :accept="getMediaAcceptType()" @change="onMediaChange" />
           </div>
 
-          <div>
+          <div v-if="form.media_type != 'video'">
             <label class="block text-sm font-medium text-gray-700 mb-1">Replace Thumbnail</label>
             <input type="file" accept="image/*" @change="onThumbnailChange" />
           </div>
@@ -174,16 +174,21 @@ async function fetchMedia() {
 
     const data = res.data;
 
+    // console.log(data);
+
     form.value = {
-      title: data.title,
-      description: data.description,
-      media_type: data.media_type,
-      category_id: data.category_id,
-      status: data.status,
+      title: data.media.title,
+      description: data.media.description,
+      media_type: data.media.media_type,
+      category_id: data.media.category_id,
+      status: data.media.status,
     };
 
-    mediaPreview.value = getFileUrl(data.media_url);
-    thumbnailPreview.value = getFileUrl(data.thumbnail_url);
+    // mediaPreview.value = getFileUrl(data.media.media_url);
+    // thumbnailPreview.value = getFileUrl(data.media.thumbnail_url);
+
+    mediaPreview.value = data.media.media_url;
+    thumbnailPreview.value = data.media.thumbnail_url;
   } catch (err) {
     console.error("Failed to fetch media", err);
   }

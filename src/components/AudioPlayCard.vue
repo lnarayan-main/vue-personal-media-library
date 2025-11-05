@@ -2,7 +2,7 @@
     <div :class="[
         'relative w-full h-full bg-cover bg-center rounded-lg overflow-hidden transition-all duration-500',
         isPlaying ? 'animate-glow' : ''
-    ]" :style="{ backgroundImage: `url(${getFileUrl(thumbnail_url)})` }">
+    ]" :style="{ backgroundImage: `url(${thumbnail_url})` }">
         <audio :src="getFileUrl(file_url)" :controls="showControls" @play="handlePlay" @pause="handlePause"
             class="absolute bottom-0 left-0 w-full bg-white/80 backdrop-blur-sm"></audio>
     </div>

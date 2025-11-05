@@ -30,7 +30,8 @@ let player;
 
 onMounted(() => {
     const audio = audioRef.value;
-    const src = `${apiBase}${props.hls_path}`;
+    // const src = `${apiBase}${props.hls_path}`;
+    const src = props.hls_path;
 
     if (Hls.isSupported()) {
         const hls = new Hls();

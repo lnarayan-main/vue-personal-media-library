@@ -14,7 +14,10 @@
                 </div>
 
                 <template v-if="media.media_type === 'video'">
-                    <video :src="media.file_url" :poster="getFileUrl(media.thumbnail_url)"
+                    <!-- <video :src="media.file_url" :poster="getFileUrl(media.thumbnail_url)"
+                        class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        muted></video> -->
+                    <video :src="media.file_url" :poster="media.thumbnail_url"
                         class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                         muted></video>
                 </template>

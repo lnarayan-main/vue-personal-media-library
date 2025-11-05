@@ -24,7 +24,8 @@ let playerInstance = null
 
 onMounted(() => {
   const video = videoRef.value
-  const src = `${apiBase}${props.hls_path}`
+  // const src = `${apiBase}${props.hls_path}`
+  const src = props.hls_path
 
   if (Hls.isSupported()) {
     hlsInstance = new Hls({

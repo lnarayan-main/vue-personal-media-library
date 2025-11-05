@@ -23,7 +23,7 @@
           class="absolute right-8 top-1/2 -translate-y-1/2 flex items-center gap-2 bg-white border border-gray-200 rounded-full shadow-lg px-2 py-1 z-30"
         >
           <!-- Edit -->
-          <router-link
+          <!-- <router-link
             v-if="canEditDelete"
             :to="`/media/update/${media_id}`"
             @click="menuOpen = false"
@@ -31,7 +31,7 @@
             title="Edit"
           >
             <PencilIcon class="h-4 w-4" />
-          </router-link>
+          </router-link> -->
 
           <!-- Delete -->
           <button

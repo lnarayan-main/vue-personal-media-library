@@ -87,22 +87,33 @@ const rememberMe = ref(localStorage.getItem("remember_me") === "true");
 const showPassword = ref(false);
 
 const handleLogin = async () => {
-  const { success, message } = await auth.login({
-    email: email.value,
-    password: password.value,
-    rememberMe: rememberMe.value
-  });
+  error.value = '';
+  loading.value = true;
 
+  try{
+    const { success, message } = await auth.login({
+      email: email.value,
+      password: password.value,
+      rememberMe: rememberMe.value
+    });
 
-  if (success) {
-    if (rememberMe.value) {
-      localStorage.setItem("remember_me", "true");
+    if (success) {
+      if (rememberMe.value) {
+        localStorage.setItem("remember_me", "true");
+      } else {
+        localStorage.removeItem("remember_me");
+      }
+      router.push("/dashboard");
     } else {
-      localStorage.removeItem("remember_me");
+      error.value = message;
     }
-    router.push("/dashboard");
-  } else {
-    error.value = message;
+  } catch (err){
+    console.error("Login failed: ", err);
+    error.value = "An unexpectecd error occurred. Please try again.";
+  } finally{
+    loading.value = false;
   }
+
+
 };
 </script>

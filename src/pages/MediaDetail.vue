@@ -15,15 +15,21 @@
       <div class="min-w-0">
         
         <div class="w-full rounded-xl overflow-hidden bg-black shadow-2xl">
-          <VideoPlayer v-if="media.media_type === 'video'" 
+          <!-- <VideoPlayer v-if="media.media_type === 'video'" 
             :hls_path="media.hls_path" 
             :thumbnail_url="getFileUrl(media.thumbnail_url)" 
+            :media="media" 
+          /> -->
+          <VideoPlayer v-if="media.media_type === 'video'" 
+            :hls_path="media.hls_path" 
+            :thumbnail_url="media.thumbnail_url" 
             :media="media" 
           />
           <div v-else-if="media.media_type === 'audio'"
             class=" flex items-center justify-center">
             <!-- <AudioPlayCard :thumbnail_url="media.thumbnail_url" :file_url="media.file_url" :showControls="true" /> -->
-            <AudioPlayer :hls_path="media.hls_path" :thumbnail_url="getFileUrl(media.thumbnail_url)"  />
+            <!-- <AudioPlayer :hls_path="media.hls_path" :thumbnail_url="getFileUrl(media.thumbnail_url)"  /> -->
+            <AudioPlayer :hls_path="media.hls_path" :thumbnail_url="media.thumbnail_url"  />
           </div>
           <div v-else class="aspect-video text-gray-500 p-8 text-center bg-gray-900">Unsupported media type</div>
         </div>

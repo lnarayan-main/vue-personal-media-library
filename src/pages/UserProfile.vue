@@ -7,12 +7,26 @@
     <div v-else class="max-w-8xl mx-auto bg-white shadow-xl rounded-lg overflow-hidden">
 
       <header class="relative">
-         <div
+         <!-- <div
             :style="{
               backgroundImage: previewBannerUrl
                 ? `url(${previewBannerUrl})` 
                 : user.background_pic_url
                   ? `url(${getFileUrl(user.background_pic_url)})`
+                  : 'none',
+            }"
+          :class="[
+            'w-full h-48 bg-gray-800 bg-cover bg-center rounded-xl overflow-hidden relative',
+            { 'bg-indigo-600': !user.banner_url }
+          ]"
+        > -->
+
+         <div
+            :style="{
+              backgroundImage: previewBannerUrl
+                ? `url(${previewBannerUrl})` 
+                : user.background_pic_url
+                  ? `url(${user.background_pic_url})`
                   : 'none',
             }"
           :class="[

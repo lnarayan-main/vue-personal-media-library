@@ -2,7 +2,9 @@
   <!-- <main class="flex-1 bg-gray-50 p-6"> -->
     <!-- Header: single card with avatar + basic info -->
     <div class="bg-white rounded-xl shadow-md p-6 mb-6 flex items-center gap-6">
-      <img :src="getFileUrl(profile.profile_pic_url) || defaultAvatar" alt="{{ profile.name }}"
+      <!-- <img :src="getFileUrl(profile.profile_pic_url) || defaultAvatar" alt="{{ profile.name }}"
+        class="w-20 h-20 rounded-full object-cover border-2 border-indigo-100" /> -->
+      <img :src="profile.profile_pic_url || defaultAvatar" alt="{{ profile.name }}"
         class="w-20 h-20 rounded-full object-cover border-2 border-indigo-100" />
       <div>
         <h1 class="text-xl font-bold text-gray-800">{{ profile.name }}</h1>
@@ -43,7 +45,9 @@
           <!-- Left: avatar preview + change button -->
           <div class="flex items-center gap-4">
             <div class="relative">
-              <img :src="preview || getFileUrl(profile.profile_pic_url) || defaultAvatar" :alt="profile.name"
+              <!-- <img :src="preview || getFileUrl(profile.profile_pic_url) || defaultAvatar" :alt="profile.name"
+                class="w-24 h-24 rounded-full object-cover border" /> -->
+              <img :src="preview || profile.profile_pic_url || defaultAvatar" :alt="profile.name"
                 class="w-24 h-24 rounded-full object-cover border" />
             </div>
 

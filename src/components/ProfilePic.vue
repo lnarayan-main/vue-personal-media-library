@@ -9,7 +9,7 @@ const props = defineProps({
 </script>
 
 <template>
-    <img :src="getFileUrl(url) || defaultAvatar" alt="User Avatar"
+    <img :src="url || defaultAvatar" alt="User Avatar"
         class="h-10 w-10 object-cover rounded-full border-2 border-indigo-500 cursor-pointer hover:shadow-lg transition"
         onerror="this.onerror=null; this.src=defaultAvatar" />
 </template>

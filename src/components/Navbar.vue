@@ -29,7 +29,10 @@
         </span>
 
         <button @click="toggleDropdown" class="focus:outline-none" ref="profileButton">
-          <img :src="getFileUrl(auth.currentUser.profile_pic_url) || defaultAvatar" alt="User Avatar"
+          <!-- <img :src="getFileUrl(auth.currentUser.profile_pic_url) || defaultAvatar" alt="User Avatar"
+            class="h-10 w-10 object-cover rounded-full border-2 border-indigo-500 cursor-pointer hover:shadow-lg transition"
+            onerror="this.onerror=null; this.src=defaultAvatar" /> -->
+          <img :src="auth.currentUser.profile_pic_url || defaultAvatar" alt="User Avatar"
             class="h-10 w-10 object-cover rounded-full border-2 border-indigo-500 cursor-pointer hover:shadow-lg transition"
             onerror="this.onerror=null; this.src=defaultAvatar" />
         </button>

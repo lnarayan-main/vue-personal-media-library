@@ -7,7 +7,7 @@
 
         <!-- Background pattern overlay -->
         <div class="absolute inset-0 opacity-20">
-            <img :src="heroBgPattern" alt="pattern" class="w-full h-full object-cover mix-blend-overlay" />
+            <img :src="heroBgPattern" alt="pattern" class="w-1/3 h-1/3 object-cover mix-blend-overlay" />
         </div>
 
         <!-- Main content -->

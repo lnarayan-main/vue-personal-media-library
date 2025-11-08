@@ -78,9 +78,9 @@
                 <component :is="isSubscribed ? BellAlertIcon : BellIcon" class="h-5 w-5 inline-block mr-2"/>
                 {{ isSubscribed ? 'Subscribed' : 'Subscribe' }}
               </button>
-              <button v-if="!isOwner" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-full font-semibold hover:bg-gray-300 transition">
+              <!-- <button v-if="!isOwner" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-full font-semibold hover:bg-gray-300 transition">
                 <EllipsisHorizontalIcon class="h-5 w-5" />
-              </button>
+              </button> -->
             </div>
           </div>
         </div>

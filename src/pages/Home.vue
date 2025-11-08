@@ -1,5 +1,4 @@
 <template>
-  <!-- <div class="p-6 bg-gray-100 min-h-screen"> -->
     <div class="min-h-screen bg-white md:bg-gray-50 px-4 py-6 md:p-8">
 
     <!-- Hero Section -->
@@ -73,38 +72,39 @@
       </div> -->
 
 
-      <div class="mb-6">
-        <div
-          class="flex gap-2 overflow-x-auto pb-2 border-b border-gray-200"
-          style="scrollbar-width: thin; scrollbar-color: #9ca3af #f3f4f6;"
+     <!-- Category Filter -->
+    <div class="mb-6">
+      <div
+        class="flex overflow-x-auto no-scrollbar gap-3 pb-2 border-b border-gray-200"
+      >
+        <button
+          v-for="cat in categories"
+          :key="cat.id"
+          @click="selectedCategory = cat.id"
+          :class="[
+            'flex-shrink-0 px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition duration-200',
+            selectedCategory === cat.id
+              ? 'bg-indigo-600 text-white shadow-md'
+              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+          ]"
         >
-          <button
-            v-for="cat in categories"
-            :key="cat.id"
-            @click="selectedCategory = cat.id"
-            :class="[
-              'flex-shrink-0 px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition',
-              selectedCategory === cat.id
-                ? 'bg-indigo-600 text-white shadow-md'
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-            ]"
-          >
-            {{ cat.name }}
-          </button>
+          {{ cat.name }}
+        </button>
 
-          <button
-            @click="selectedCategory = null"
-            :class="[
-              'flex-shrink-0 px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition',
-              selectedCategory === null
-                ? 'bg-indigo-600 text-white shadow-md'
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-            ]"
-          >
-            All
-          </button>
-        </div>
+        <button
+          @click="selectedCategory = null"
+          :class="[
+            'flex-shrink-0 px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition duration-200',
+            selectedCategory === null
+              ? 'bg-indigo-600 text-white shadow-md'
+              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+          ]"
+        >
+          All
+        </button>
       </div>
+    </div>
+
 
 
 
@@ -119,7 +119,6 @@
     </div>
 
     <!-- Media Grid -->
-    <!-- <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"> -->
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 px-1 sm:px-0">
       <MediaCard
           v-for="item in filteredMedia"
@@ -257,6 +256,15 @@ onMounted(() => {
 
 ::-webkit-scrollbar-thumb:hover {
   background-color: #6b7280;
+}
+
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;  
+  scrollbar-width: none;     
 }
 
 </style>

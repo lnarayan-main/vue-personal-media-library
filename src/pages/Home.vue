@@ -1,5 +1,7 @@
 <template>
-  <div class="p-6 bg-gray-100 min-h-screen">
+  <!-- <div class="p-6 bg-gray-100 min-h-screen"> -->
+    <div class="min-h-screen bg-white md:bg-gray-50 px-4 py-6 md:p-8">
+
     <!-- Hero Section -->
     <!-- <section class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white rounded-2xl shadow-lg p-10 text-center mb-5">
       <h1 class="text-4xl md:text-5xl font-bold mb-4">
@@ -13,7 +15,9 @@
 
     <HeroSection @scroll-to-media="handleScrollToMedia"/>
 
-    <div ref="mediaLibraryRef" class="flex justify-between items-center mt-5 mb-6">
+    <!-- <div ref="mediaLibraryRef" class="flex justify-between items-center mt-5 mb-6"> -->
+    <div ref="mediaLibraryRef" class="flex flex-col sm:flex-row sm:justify-between sm:items-center mt-5 mb-6 gap-2">
+
       <h1 class="text-2xl font-bold">Media Library</h1>
     </div>
 
@@ -35,7 +39,7 @@
 
 
     <!-- Category Filter -->
-      <div class="mb-6">
+      <!-- <div class="mb-6">
         <div
           class="flex gap-2 overflow-x-auto pb-2 border-b border-gray-200"
           style="scrollbar-width: thin; scrollbar-color: #9ca3af #f3f4f6;"
@@ -66,7 +70,42 @@
             All
           </button>
         </div>
+      </div> -->
+
+
+      <div class="mb-6">
+        <div
+          class="flex gap-2 overflow-x-auto pb-2 border-b border-gray-200"
+          style="scrollbar-width: thin; scrollbar-color: #9ca3af #f3f4f6;"
+        >
+          <button
+            v-for="cat in categories"
+            :key="cat.id"
+            @click="selectedCategory = cat.id"
+            :class="[
+              'flex-shrink-0 px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition',
+              selectedCategory === cat.id
+                ? 'bg-indigo-600 text-white shadow-md'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            ]"
+          >
+            {{ cat.name }}
+          </button>
+
+          <button
+            @click="selectedCategory = null"
+            :class="[
+              'flex-shrink-0 px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition',
+              selectedCategory === null
+                ? 'bg-indigo-600 text-white shadow-md'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            ]"
+          >
+            All
+          </button>
+        </div>
       </div>
+
 
 
 
@@ -80,7 +119,8 @@
     </div>
 
     <!-- Media Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <!-- <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"> -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 px-1 sm:px-0">
       <MediaCard
           v-for="item in filteredMedia"
           :key="item.id"

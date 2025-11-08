@@ -12,7 +12,12 @@
       </div>
       
       <div class="w-full h-full rounded-md overflow-hidden bg-gray-900 flex items-center justify-center">
-        <img v-if="media.thumbnail_url" 
+        <img v-if="media.thumbnail_url && media.media_type == 'video'" 
+          :src="media.thumbnail_url" 
+          alt="Media Thumbnail"
+          class="w-full h-full object-cover"
+        />
+        <img v-else-if="media.thumbnail_url" 
           :src="getFileUrl(media.thumbnail_url)" 
           alt="Media Thumbnail"
           class="w-full h-full object-cover"

@@ -1,6 +1,6 @@
 const config = {
     // API_BASE_URL: import.meta.env.VITE_API_URL || 'http://localhost:8000',
-    API_BASE_URL: import.meta.env.VITE_API_URL || "https://mediahub-backend-fxoz.onrender.com/",
+    API_BASE_URL: import.meta.env.VITE_API_URL || "https://mediahub-backend-9vwj.onrender.com/",
 
     // FEATURE_FLAG_PROFILES: import.meta.env.VITE_ENABLE_PROFILES === 'true',
 };

@@ -13,7 +13,7 @@
 import { getFileUrl } from '@/utils/helpers'
 import { ref } from 'vue'
 
-// Props to accept data dynamically
+// Props to accept data dynamically here
 const props = defineProps({
     thumbnail_url: String,
     file_url: String,
@@ -22,6 +22,8 @@ const props = defineProps({
       default: false
     }
 })
+
+
 
 // Local state
 const isPlaying = ref(false)
